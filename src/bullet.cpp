@@ -1,5 +1,6 @@
 #include "bullet.h"
 #include "mixin.h"
+#include "enemy.h"
 
 Bullet::Bullet(int x, int y, int direction) {
     xPos = x;
@@ -24,11 +25,17 @@ bool Bullet::move() {
         return true;
     } else {
         MapUtils::updateAxis(xPos, yPos, nullptr);
-        Item *impacted = globalMap[newX][newY];
-        if (dynamic_cast<Vulnerable *>(impacted)) {
-            auto impacted1 = dynamic_cast<Vulnerable *>(impacted);
-            if (!impacted1->beAttacked(*this)) {
-                delete impacted;
+        Item *item = globalMap[newX][newY];
+        if (dynamic_cast<Vulnerable *>(item)) {
+            auto impacted = dynamic_cast<Vulnerable *>(item);
+            int originHP = impacted->healthPoint;
+            bool alive = impacted->beAttacked(*this);
+            int descHP = impacted->healthPoint;
+            if (dynamic_cast<Enemy *>(impacted)) {
+                myHero->score += descHP - originHP;
+            }
+            if (!alive) {
+                delete item;
                 MapUtils::updateAxis(newX, newY, nullptr);
             }
         }

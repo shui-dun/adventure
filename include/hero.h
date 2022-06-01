@@ -7,6 +7,8 @@
 
 class Hero : public Item, public Vulnerable, public Movable {
 public:
+    int score;
+
     int bulletAttackVal = 2;
 
     int direction;

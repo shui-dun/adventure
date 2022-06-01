@@ -12,6 +12,7 @@ Hero::Hero(int x, int y) {
     healthPoint = 20;
     timeInterval = 200;
     direction = 0;
+    score = 0;
 }
 
 bool Hero::move() {

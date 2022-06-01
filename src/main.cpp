@@ -16,6 +16,9 @@ int main() {
     std::random_device rd;
     randEngine.seed(rd());
     MapUtils::init();
-    MapUtils::createCharacters();
+    thread t1(MapUtils::createCharacters);
+    thread t2(MapUtils::showInfo);
+    t1.join();
+    t2.join();
     return 0;
 }

@@ -18,6 +18,8 @@ public:
     static void updateAxis(int x, int y, Item *item);
 
     static void createCharacters();
+
+    static void showInfo();
 };
 
 
