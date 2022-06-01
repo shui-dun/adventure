@@ -8,8 +8,8 @@
 RandomWalkEnemy::RandomWalkEnemy(int x, int y) {
     xPos = x;
     yPos = y;
-    symbol = '+' | COLOR_PAIR(NORMAL_INIT);
     healthPoint = 6;
+    symbol = '+' | COLOR_PAIR(NORMAL_INIT);
     attackVal = 2;
     timeInterval = 600;
 }

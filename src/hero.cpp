@@ -36,7 +36,7 @@ bool Hero::move() {
             direction = 3;
             break;
         } else if (ch == ' ') {
-            Bullet *bullet = new Bullet(xPos, yPos, direction);
+            Bullet *bullet = new Bullet(xPos, yPos, direction, bulletAttackVal);
             auto p = MoveUtils::moveWithDirection(*bullet, direction);
             int bulletX = p.first, bulletY = p.second;
             if (globalMap[bulletX][bulletY] == nullptr) {

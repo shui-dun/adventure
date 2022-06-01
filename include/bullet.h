@@ -10,9 +10,9 @@ class Bullet : public Item, public Movable, public Vulnerable, public Aggressive
 public:
     int direction;
 
-    Bullet(int x, int y, int direction);
+    Bullet(int x, int y, int direction, int attackVal);
 
-    bool move() override ;
+    bool move() override;
 
     bool beAttacked(Aggressive &attacker) override;
 };

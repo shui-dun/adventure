@@ -2,12 +2,12 @@
 #include "mixin.h"
 #include "enemy.h"
 
-Bullet::Bullet(int x, int y, int direction) {
+Bullet::Bullet(int x, int y, int direction, int attackVal) {
     xPos = x;
     yPos = y;
     symbol = '*' | COLOR_PAIR(NORMAL_INIT);
     healthPoint = 1;
-    attackVal = 2;
+    this->attackVal = attackVal;
     timeInterval = 400;
     this->direction = direction;
 
