@@ -2,6 +2,7 @@
 #include <thread>
 #include "mixin.h"
 #include "hero.h"
+#include "map.h"
 
 
 pair<int, int> MoveUtils::moveWithDirection(Item &item, int direction) {
@@ -33,7 +34,7 @@ void MoveUtils::p(Movable *character) {
         bool alive = character->move();
         xPos = itemCharacter->xPos, yPos = itemCharacter->yPos;
         if (!alive) {
-            globalMap[xPos][yPos] = nullptr;
+            MapUtils::updateAxis(xPos, yPos, nullptr);
             delete character;
         }
     }

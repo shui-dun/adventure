@@ -23,7 +23,7 @@ void MapUtils::init() {
     init_pair(NORMAL_INJURED, COLOR_RED, COLOR_WHITE);
     init_pair(ME, COLOR_CYAN, COLOR_WHITE);
     init_pair(CURE_POTION, COLOR_WHITE, COLOR_GREEN);
-    init_pair(STRENGTHEN_POTION, COLOR_WHITE, COLOR_YELLOW);
+    init_pair(STRENGTHEN_POTION, COLOR_WHITE, COLOR_GREEN);
     wbkgd(stdscr, COLOR_PAIR(BACKGROUND));
     attron(COLOR_PAIR(INFO));
     genWall();

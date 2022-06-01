@@ -16,6 +16,7 @@ RandomWalkEnemy::RandomWalkEnemy(int x, int y) {
 
 bool RandomWalkEnemy::move() {
     uniform_int_distribution<int> distribution(0, 3);
+    bool alive = true;
     while (true) {
         int direction = distribution(randEngine);
         auto p = MoveUtils::moveWithDirection(*this, direction);
@@ -26,16 +27,25 @@ bool RandomWalkEnemy::move() {
             yPos = newY;
             MapUtils::updateAxis(xPos, yPos, this);
             break;
-        } else if (dynamic_cast<Hero *>(globalMap[newX][newY])) {
-            Hero *hero = dynamic_cast<Hero *>( globalMap[newX][newY]);
-            if (!hero->beAttacked(*this)) {
+        }
+        if (dynamic_cast<Aggressive *>(globalMap[newX][newY])) {
+            auto aggressive = dynamic_cast<Aggressive *>(globalMap[newX][newY]);
+            int originHP = healthPoint;
+            alive = beAttacked(*aggressive);
+            if (dynamic_cast<Bullet *>(aggressive)) {
+                myHero->score += originHP - healthPoint;
+            }
+        }
+        if (dynamic_cast<Vulnerable *>(globalMap[newX][newY])) {
+            auto attacked = dynamic_cast<Vulnerable *>(globalMap[newX][newY]);
+            if (!attacked->beAttacked(*this)) {
                 MapUtils::updateAxis(newX, newY, nullptr);
-                delete hero;
+                delete attacked;
             }
             break;
         }
     }
-    return true;
+    return alive;
 }
 
 bool RandomWalkEnemy::beAttacked(Aggressive &attacker) {
