@@ -66,10 +66,12 @@ void MapUtils::genRandomMap() {
 }
 
 void MapUtils::draw() {
-    for (auto &v: globalMap) {
-        for (auto item: v) {
-            if (item != nullptr) {
-                mvaddch(item->yPos, item->xPos, item->symbol);
+    for (int i = 0; i < COLS; ++i) {
+        for (int j = 0; j < LINES; ++j) {
+            if (globalMap[i][j] == nullptr) {
+                mvaddch(j, i, ' ' | COLOR_PAIR(BACKGROUND));
+            } else {
+                mvaddch(j, i, globalMap[i][j]->symbol);
             }
         }
     }
