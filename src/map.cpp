@@ -91,8 +91,13 @@ void MapUtils::updateAxis(int x, int y, Item *item) {
 void MapUtils::createCharacters() {
     thread tHero(MoveUtils::p, dynamic_cast<Movable *>(myHero));
     tHero.detach();
+    int loop = 0;
     while (true) {
-        this_thread::sleep_for(chrono::milliseconds(1000));
+        if (loop < 20) {
+            loop += 1;
+        } else {
+            this_thread::sleep_for(chrono::milliseconds(4000));
+        }
 
         int xPos, yPos;
         uniform_int_distribution<int> xDistribution(1, COLS - 2);
@@ -107,11 +112,11 @@ void MapUtils::createCharacters() {
         Item *item = nullptr;
         uniform_real_distribution<float> distribution(0.0, 1.0);
         double randVal = distribution(randEngine);
-        if (randVal < 0.1) {
+        if (randVal < 0.9) {
             item = new RandomWalkEnemy(xPos, yPos);
             thread t(MoveUtils::p, dynamic_cast<Movable *>(item));
             t.detach();
-        } else if (randVal < 0.9) {
+        } else if (randVal < 0.95) {
             item = new CurePotion(xPos, yPos);
         } else {
             item = new StrengthenPotion(xPos, yPos);
