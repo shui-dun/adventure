@@ -8,7 +8,7 @@ CurePotion::CurePotion(int x, int y) {
     value = 3;
 }
 
-void CurePotion::actOn(Hero hero) {
+void CurePotion::actOn(Hero &hero) {
     hero.healthPoint += value;
 }
 
@@ -19,6 +19,6 @@ StrengthenPotion::StrengthenPotion(int x, int y) {
     value = 1;
 }
 
-void StrengthenPotion::actOn(Hero hero) {
+void StrengthenPotion::actOn(Hero &hero) {
     hero.bulletAttackVal += value;
 }

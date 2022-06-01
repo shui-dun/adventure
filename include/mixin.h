@@ -3,6 +3,7 @@
 
 #include <random>
 #include <vector>
+#include <mutex>
 #include "item.h"
 #include "hero.h"
 using namespace std;
@@ -25,5 +26,7 @@ enum colors {
 extern vector<vector<Item *>> globalMap;
 
 extern Hero * myHero;
+
+extern mutex mapMutex;
 
 #endif //ADVENTURE_MIXIN_H

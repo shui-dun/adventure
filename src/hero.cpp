@@ -72,6 +72,8 @@ bool Hero::move() {
             MapUtils::updateAxis(xPos, yPos, nullptr);
             if (healthPoint > 0) {
                 MapUtils::updateAxis(newX, newY, this);
+                xPos = newX;
+                yPos = newY;
                 return true;
             } else {
                 return false;

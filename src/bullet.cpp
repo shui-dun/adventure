@@ -32,7 +32,7 @@ bool Bullet::move() {
             bool alive = impacted->beAttacked(*this);
             int descHP = impacted->healthPoint;
             if (dynamic_cast<Enemy *>(impacted)) {
-                myHero->score += descHP - originHP;
+                myHero->score += originHP - descHP;
             }
             if (!alive) {
                 delete item;

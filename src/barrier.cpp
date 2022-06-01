@@ -1,5 +1,5 @@
 #include "barrier.h"
-#include "hero.h"
+#include "bullet.h"
 #include "mixin.h"
 
 SolidBarrier::SolidBarrier(int x, int y) {
@@ -16,7 +16,7 @@ WeakBarrier::WeakBarrier(int x, int y) {
 }
 
 bool WeakBarrier::beAttacked(Aggressive &attacker) {
-    if (!dynamic_cast<Hero *>(&attacker)) {
+    if (!dynamic_cast<Bullet *>(&attacker)) {
         return true;
     } else {
         return AttackUtils::attack(attacker, *this, ' ' | COLOR_PAIR(WEAK_BARRIER_INJURED));

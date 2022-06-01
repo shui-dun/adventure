@@ -77,6 +77,7 @@ void MapUtils::draw() {
 }
 
 void MapUtils::updateAxis(int x, int y, Item *item) {
+    mapMutex.lock();
     globalMap[x][y] = item;
     if (item) {
         mvaddch(y, x, item->symbol);
@@ -84,13 +85,14 @@ void MapUtils::updateAxis(int x, int y, Item *item) {
         mvaddch(y, x, ' ' | COLOR_PAIR(BACKGROUND));
     }
     refresh();
+    mapMutex.unlock();
 }
 
 void MapUtils::createCharacters() {
     thread tHero(MoveUtils::p, dynamic_cast<Movable *>(myHero));
     tHero.detach();
     while (true) {
-        this_thread::sleep_for(chrono::milliseconds(4000));
+        this_thread::sleep_for(chrono::milliseconds(1000));
 
         int xPos, yPos;
         uniform_int_distribution<int> xDistribution(1, COLS - 2);
@@ -105,7 +107,7 @@ void MapUtils::createCharacters() {
         Item *item = nullptr;
         uniform_real_distribution<float> distribution(0.0, 1.0);
         double randVal = distribution(randEngine);
-        if (randVal < 0.8) {
+        if (randVal < 0.1) {
             item = new RandomWalkEnemy(xPos, yPos);
             thread t(MoveUtils::p, dynamic_cast<Movable *>(item));
             t.detach();
@@ -120,7 +122,9 @@ void MapUtils::createCharacters() {
 
 void MapUtils::showInfo() {
     while (true) {
+        mapMutex.lock();
         mvprintw(0, 1, "HP: %d ATK: %d SCORES: %d", myHero->healthPoint, myHero->bulletAttackVal, myHero->score);
+        mapMutex.unlock();
         this_thread::sleep_for(chrono::milliseconds(500));
     }
 }

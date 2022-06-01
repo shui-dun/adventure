@@ -5,3 +5,5 @@ mt19937 randEngine;
 vector<vector<Item *>> globalMap;
 
 Hero *myHero;
+
+mutex mapMutex;

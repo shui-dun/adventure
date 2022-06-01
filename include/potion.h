@@ -6,7 +6,7 @@
 
 class Potion : public Item {
 public:
-    virtual void actOn(Hero hero) = 0;
+    virtual void actOn(Hero &hero) = 0;
 };
 
 class CurePotion : public Potion {
@@ -14,7 +14,7 @@ class CurePotion : public Potion {
 public:
     CurePotion(int x, int y);
 
-    void actOn(Hero hero) override;
+    void actOn(Hero &hero) override;
 };
 
 class StrengthenPotion : public Potion {
@@ -22,7 +22,7 @@ class StrengthenPotion : public Potion {
 public:
     StrengthenPotion(int x, int y);
 
-    void actOn(Hero hero) override;
+    void actOn(Hero &hero) override;
 };
 
 #endif //ADVENTURE_POTION_H
