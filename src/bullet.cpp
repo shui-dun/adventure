@@ -1,6 +1,5 @@
 #include "bullet.h"
 #include "mixin.h"
-#include "map.h"
 
 Bullet::Bullet(int x, int y, int direction) {
     xPos = x;
@@ -8,25 +7,20 @@ Bullet::Bullet(int x, int y, int direction) {
     symbol = '*' | COLOR_PAIR(NORMAL_INIT);
     healthPoint = 1;
     attackVal = 2;
-    timeInterval = 200;
+    timeInterval = 400;
     this->direction = direction;
 
 }
 
 bool Bullet::move() {
-    int newX = xPos, newY = yPos;
-    if (direction == 0) {
-        newY -= 1;
-    } else if (direction == 1) {
-        newY += 1;
-    } else if (direction == 2) {
-        newX -= 1;
-    } else {
-        newX += 1;
-    }
+    auto p = MoveUtils::moveWithDirection(*this, direction);
+    int newX = p.first, newY = p.second;
+
     if (globalMap[newX][newY] == nullptr) {
         MapUtils::updateAxis(xPos, yPos, nullptr);
         MapUtils::updateAxis(newX, newY, this);
+        xPos = newX;
+        yPos = newY;
         return true;
     } else {
         MapUtils::updateAxis(xPos, yPos, nullptr);

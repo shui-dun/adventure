@@ -18,7 +18,6 @@ class WeakBarrier : public Barrier, public Vulnerable {
 public:
 
     WeakBarrier(int x, int y);
-
     bool beAttacked(Aggressive &attacker) override;
 };
 

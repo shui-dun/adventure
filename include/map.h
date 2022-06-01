@@ -2,6 +2,7 @@
 #define ADVENTURE_MAP_H
 
 #include "item.h"
+#include "bullet.h"
 
 class MapUtils {
 public:
@@ -15,6 +16,8 @@ public:
     static void draw();
 
     static void updateAxis(int x, int y, Item *item);
+
+    static void createCharacters();
 };
 
 

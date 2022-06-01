@@ -1,12 +1,16 @@
 #ifndef ADVENTURE_HERO_H
 #define ADVENTURE_HERO_H
 
-#include "movable.h"
+#include "move.h"
 #include "attack.h"
 #include "item.h"
 
-class Hero : public Item, public Aggressive, public Vulnerable, public Movable {
+class Hero : public Item, public Vulnerable, public Movable {
 public:
+    int bulletAttackVal = 2;
+
+    int direction;
+
     Hero(int x, int y) ;
 
     bool move() override ;

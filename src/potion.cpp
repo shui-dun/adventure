@@ -20,5 +20,5 @@ StrengthenPotion::StrengthenPotion(int x, int y) {
 }
 
 void StrengthenPotion::actOn(Hero hero) {
-    hero.attackVal += value;
+    hero.bulletAttackVal += value;
 }

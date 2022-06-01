@@ -10,6 +10,7 @@ extern mt19937 randEngine;
 
 enum colors {
     BACKGROUND = 1,
+    FRONT,
     SOLID_BARRIER,
     WEAK_BARRIER_INIT,
     WEAK_BARRIER_INJURED,

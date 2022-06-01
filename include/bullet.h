@@ -1,13 +1,15 @@
 #ifndef ADVENTURE_BULLET_H
 #define ADVENTURE_BULLET_H
 
-#include "movable.h"
+#include "move.h"
 #include "attack.h"
 #include "item.h"
+#include "map.h"
 
 class Bullet : public Item, public Movable, public Vulnerable, public Aggressive {
-    int direction;
 public:
+    int direction;
+
     Bullet(int x, int y, int direction);
 
     bool move() override ;

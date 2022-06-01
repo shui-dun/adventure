@@ -1,19 +1,91 @@
 #include "hero.h"
 #include "mixin.h"
+#include "map.h"
+#include "potion.h"
+#include <thread>
 
 
 Hero::Hero(int x, int y) {
     xPos = x;
     yPos = y;
     symbol = 'O' | COLOR_PAIR(ME);
-    attackVal = 2;
     healthPoint = 20;
-    timeInterval = 100;
+    timeInterval = 200;
+    direction = 0;
 }
 
 bool Hero::move() {
-    // 按照用户输入
-    return true;
+    chtype ch;
+    int newX = xPos, newY = yPos;
+    while (ch = getch()) {
+        if (ch == 'w') {
+            newY -= 1;
+            direction = 0;
+            break;
+        } else if (ch == 's') {
+            newY += 1;
+            direction = 1;
+            break;
+        } else if (ch == 'a') {
+            newX -= 1;
+            direction = 2;
+            break;
+        } else if (ch == 'd') {
+            newX += 1;
+            direction = 3;
+            break;
+        } else if (ch == ' ') {
+            Bullet *bullet = new Bullet(xPos, yPos, direction);
+            auto p = MoveUtils::moveWithDirection(*bullet, direction);
+            int bulletX = p.first, bulletY = p.second;
+            if (globalMap[bulletX][bulletY] == nullptr) {
+                bullet->xPos = bulletX;
+                bullet->yPos = bulletY;
+                bullet->direction = direction;
+                MapUtils::updateAxis(bulletX, bulletY, bullet);
+                thread t(MoveUtils::p, bullet);
+                t.detach();
+                return true;
+            } else {
+                delete bullet;
+                return true;
+            }
+        } else if (ch == 'Q') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    Item *item = globalMap[newX][newY];
+    if (item == nullptr) {
+        MapUtils::updateAxis(xPos, yPos, nullptr);
+        MapUtils::updateAxis(newX, newY, this);
+        xPos = newX;
+        yPos = newY;
+        return true;
+    } else {
+        auto aggressive = dynamic_cast<Aggressive *>(item);
+        auto potion = dynamic_cast<Potion *>(item);
+        if (potion) {
+            potion->actOn(*this);
+            MapUtils::updateAxis(xPos, yPos, nullptr);
+            if (healthPoint > 0) {
+                MapUtils::updateAxis(newX, newY, this);
+                return true;
+            } else {
+                return false;
+            }
+        } else if (aggressive) {
+            if (!beAttacked(*aggressive)) {
+                MapUtils::updateAxis(xPos, yPos, nullptr);
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
 }
 
 bool Hero::beAttacked(Aggressive &attacker) {
