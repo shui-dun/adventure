@@ -100,6 +100,16 @@ bool Hero::move() {
         MapUtils::updateAxis(xPos, yPos, nullptr);
         myHero = nullptr;
         return false;
+    } else if (inputChar == 'p') {
+        mvprintw(MapUtils::lines - 1, 0,
+                 "Game Paused, Press p to Continue                               ");
+        refresh();
+        while (getch() != 'p') {
+        }
+        mvprintw(MapUtils::lines - 1, 0,
+                 "                                                               ");
+        refresh();
+        return true;
     } else {
         return true;
     }

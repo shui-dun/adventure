@@ -18,6 +18,7 @@ void MapUtils::init() {
     cols = COLS < 52 ? COLS : 52;
     raw();
     noecho();
+    keypad(stdscr,TRUE);
     curs_set(0);
     start_color();
     init_pair(BACKGROUND, COLOR_WHITE, COLOR_WHITE);
