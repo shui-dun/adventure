@@ -14,7 +14,7 @@ private:
 public:
     int score;
 
-    int bulletAttackVal = 2;
+    int bulletAttackVal;
 
     int direction;
 

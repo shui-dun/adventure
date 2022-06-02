@@ -18,6 +18,8 @@ public:
     virtual bool beAttacked(Aggressive &attacker) = 0;
 
     int healthPoint;
+
+    int defendVal;
 };
 
 class AttackUtils {

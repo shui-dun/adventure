@@ -13,6 +13,7 @@ WeakBarrier::WeakBarrier(int x, int y) {
     yPos = y;
     symbol = ' ' | COLOR_PAIR(WEAK_BARRIER_INIT);
     healthPoint = 4;
+    defendVal = 1;
 }
 
 bool WeakBarrier::beAttacked(Aggressive &attacker) {

@@ -3,7 +3,10 @@
 #include "map.h"
 
 bool AttackUtils::attack(Aggressive &attacker, Vulnerable &attacked, chtype ch) {
-    attacked.healthPoint -= attacker.attackVal;
+    if (attacked.defendVal > attacker.attackVal) {
+        return true;
+    }
+    attacked.healthPoint -= attacker.attackVal - attacked.defendVal;
     Item &attackedItem = dynamic_cast<Item &>(attacked);
     chtype originCh = attackedItem.symbol;
     if (originCh != ch) {

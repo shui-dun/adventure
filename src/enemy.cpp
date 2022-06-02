@@ -10,7 +10,8 @@ RandomWalkEnemy::RandomWalkEnemy(int x, int y) {
     yPos = y;
     healthPoint = 6;
     symbol = '+' | COLOR_PAIR(NORMAL_INIT);
-    attackVal = 2;
+    attackVal = 3;
+    defendVal = 1;
     timeUnits = 6;
     curTimeUnit = randEngine() % timeUnits;
 }
@@ -62,7 +63,8 @@ AStarEnemy::AStarEnemy(int x, int y) {
     yPos = y;
     symbol = 'X' | COLOR_PAIR(NORMAL_INIT);
     healthPoint = 6;
-    attackVal = 2;
+    attackVal = 3;
+    defendVal = 1;
     timeUnits = 7;
     curTimeUnit = randEngine() % timeUnits;
 }

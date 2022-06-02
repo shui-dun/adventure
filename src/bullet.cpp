@@ -7,6 +7,7 @@ Bullet::Bullet(int x, int y, int direction, int attackVal) {
     yPos = y;
     symbol = '*' | COLOR_PAIR(NORMAL_INIT);
     healthPoint = 1;
+    defendVal = 0;
     this->attackVal = attackVal;
     timeUnits = 4;
     curTimeUnit = timeUnits - 1;

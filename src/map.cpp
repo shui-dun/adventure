@@ -112,7 +112,8 @@ void MapUtils::createCharacters() {
 void MapUtils::showInfo() {
     while (true) {
         mapMutex.lock();
-        mvprintw(0, 1, "HP: %d ATK: %d SCORES: %d", myHero->healthPoint, myHero->bulletAttackVal, myHero->score);
+        mvprintw(0, 1, "HP: %d ATK: %d SCORES: %d            ",
+                 myHero->healthPoint, myHero->bulletAttackVal, myHero->score);
         mapMutex.unlock();
         this_thread::sleep_for(chrono::milliseconds(500));
     }

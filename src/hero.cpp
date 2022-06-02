@@ -28,6 +28,8 @@ Hero::Hero(int x, int y) {
     yPos = y;
     symbol = 'A' | COLOR_PAIR(ME);
     healthPoint = 20;
+    bulletAttackVal = 3;
+    defendVal = 1;
     timeUnits = 2;
     curTimeUnit = randEngine() % timeUnits;
     direction = 0;
