@@ -164,7 +164,9 @@ void MapUtils::showGameOver() {
         mvprintw(lines / 2 - 3 + i, cols / 2 - 25, strs[i]);
     }
     attron(COLOR_PAIR(INFO));
-    mvprintw(lines - 1, 0, "Press Any Key to Continue...");
-    getch();
+    mvprintw(lines - 1, 0, "Press Big Q to Continue...");
+    refresh();
+    while (getch() != 'Q') {
+    }
     endwin();
 }

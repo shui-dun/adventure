@@ -27,7 +27,7 @@ Hero::Hero(int x, int y) {
     xPos = x;
     yPos = y;
     symbol = 'A' | COLOR_PAIR(ME);
-    healthPoint = 1;
+    healthPoint = 20;
     bulletAttackVal = 3;
     defendVal = 1;
     timeUnits = 2;
@@ -64,6 +64,7 @@ bool Hero::move() {
                         return true;
                     } else {
                         MapUtils::updateAxis(newX, newY, nullptr);
+                        myHero = nullptr;
                         return false;
                     }
                 } else if (aggressive) {
@@ -97,6 +98,7 @@ bool Hero::move() {
         }
     } else if (inputChar == 'Q') {
         MapUtils::updateAxis(xPos, yPos, nullptr);
+        myHero = nullptr;
         return false;
     } else {
         return true;
