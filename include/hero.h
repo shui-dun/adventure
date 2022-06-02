@@ -4,10 +4,13 @@
 #include "move.h"
 #include "attack.h"
 #include "item.h"
+#include <map>
 
 class Hero : public Item, public Vulnerable, public Movable {
 private:
     void updateSymbol();
+
+    static map<chtype, int> directMap;
 public:
     int score;
 

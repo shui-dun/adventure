@@ -3,6 +3,12 @@
 #include "map.h"
 #include "potion.h"
 #include <thread>
+#include <map>
+
+map<chtype, int> Hero::directMap = {{'w', 0},
+                                    {'s', 1},
+                                    {'a', 2},
+                                    {'d', 3}};
 
 void Hero::updateSymbol() {
     if (direction == 0) {
@@ -31,21 +37,20 @@ Hero::Hero(int x, int y) {
 bool Hero::move() {
     chtype ch = getch();
     mapMutex.lock();
-    int newX = xPos, newY = yPos;
-    if (ch == 'w') {
-        newY -= 1;
-        direction = 0;
-    } else if (ch == 's') {
-        newY += 1;
-        direction = 1;
-    } else if (ch == 'a') {
-        newX -= 1;
-        direction = 2;
-    } else if (ch == 'd') {
-        newX += 1;
-        direction = 3;
+    int newX, newY;
+    if (directMap.find(ch) != directMap.end()) {
+        if (direction == directMap[ch]) {
+            auto p = MoveUtils::moveWithDirection(*this, direction);
+            newX = p.first;
+            newY = p.second;
+        } else {
+            direction = directMap[ch];
+            updateSymbol();
+            MapUtils::updateAxis(xPos, yPos, this);
+            return true;
+        }
     } else if (ch == ' ') {
-        Bullet *bullet = new Bullet(xPos, yPos, direction, bulletAttackVal);
+        auto bullet = new Bullet(xPos, yPos, direction, bulletAttackVal);
         auto p = MoveUtils::moveWithDirection(*bullet, direction);
         int bulletX = p.first, bulletY = p.second;
         if (globalMap[bulletX][bulletY] == nullptr) {

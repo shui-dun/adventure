@@ -14,7 +14,6 @@ int MapUtils::cols = 0;
 
 void MapUtils::init() {
     initscr();
-    resizeterm();
     lines = LINES < 25 ? LINES : 25;
     cols = COLS < 50 ? COLS : 50;
     raw();
