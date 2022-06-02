@@ -6,6 +6,8 @@
 #include "item.h"
 
 class Hero : public Item, public Vulnerable, public Movable {
+private:
+    void updateSymbol();
 public:
     int score;
 

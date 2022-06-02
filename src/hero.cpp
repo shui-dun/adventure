@@ -4,11 +4,23 @@
 #include "potion.h"
 #include <thread>
 
+void Hero::updateSymbol() {
+    if (direction == 0) {
+        symbol = 'A' | COLOR_PAIR(ME);
+    } else if (direction == 1) {
+        symbol = 'V' | COLOR_PAIR(ME);
+    } else if (direction == 2) {
+        symbol = '<' | COLOR_PAIR(ME);
+    } else if (direction == 3) {
+        symbol = '>' | COLOR_PAIR(ME);
+    }
+}
+
 
 Hero::Hero(int x, int y) {
     xPos = x;
     yPos = y;
-    symbol = 'O' | COLOR_PAIR(ME);
+    symbol = 'A' | COLOR_PAIR(ME);
     healthPoint = 20;
     timeInterval = 200;
     direction = 0;
@@ -57,6 +69,7 @@ bool Hero::move() {
             return true;
         }
     }
+    updateSymbol();
     Item *item = globalMap[newX][newY];
     if (item == nullptr) {
         MapUtils::updateAxis(xPos, yPos, nullptr);
@@ -94,3 +107,4 @@ bool Hero::move() {
 bool Hero::beAttacked(Aggressive &attacker) {
     return AttackUtils::attack(attacker, *this, this->symbol);
 }
+
