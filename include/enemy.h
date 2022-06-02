@@ -6,12 +6,19 @@
 #include "item.h"
 
 class Enemy : public Item, public Movable, public Vulnerable, public Aggressive {
+public:
+    Enemy(int xPos, int yPos, chtype symbol, int healthPoint, int defendVal,
+          int attackVal, unsigned int timeUnits, unsigned int curTimeUnit) :
+            Item(xPos, yPos, symbol),
+            Vulnerable(healthPoint, defendVal),
+            Aggressive(attackVal),
+            Movable(timeUnits, curTimeUnit) {}
 };
 
 
 class RandomWalkEnemy : public Enemy {
 public:
-    RandomWalkEnemy(int x, int y);
+    RandomWalkEnemy(int xPos, int yPos);
 
     bool move() override;
 
@@ -23,7 +30,7 @@ public:
 
 class AStarEnemy : public Enemy {
 public:
-    AStarEnemy(int x, int y);
+    AStarEnemy(int xPos, int yPos);
 
     bool move() override;
 

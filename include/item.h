@@ -5,11 +5,14 @@
 
 class Item {
 public:
+
+    Item(int xPos, int yPos, chtype symbol) : xPos(xPos), yPos(yPos), symbol(symbol) {}
+
     virtual ~Item() = default;
 
-    int xPos;
-    int yPos;
-    chtype symbol;
+    int xPos{};
+    int yPos{};
+    chtype symbol{};
 };
 
 #endif //ADVENTURE_ITEM_H

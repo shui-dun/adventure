@@ -23,18 +23,11 @@ void Hero::updateSymbol() {
 }
 
 
-Hero::Hero(int x, int y) {
-    xPos = x;
-    yPos = y;
-    symbol = 'A' | COLOR_PAIR(ME);
-    healthPoint = 1;
-    bulletAttackVal = 3;
-    defendVal = 1;
-    timeUnits = 2;
-    curTimeUnit = randEngine() % timeUnits;
-    direction = 0;
-    score = 0;
-}
+Hero::Hero(int xPos, int yPos)
+        : Item(xPos, yPos, 'A' | COLOR_PAIR(ME)),
+          Vulnerable(20, 1),
+          Movable(2, 1),
+          bulletAttackVal(3), direction(0), score(0) {}
 
 bool Hero::move() {
     int newX, newY;
@@ -87,7 +80,7 @@ bool Hero::move() {
     } else if (inputChar == ' ') {
         auto p = MoveUtils::moveWithDirection(*this, direction);
         int bulletX = p.first, bulletY = p.second;
-        auto bullet = new Bullet(bulletX, bulletY, direction, bulletAttackVal);
+        auto bullet = new Bullet(bulletX, bulletY, direction, bulletAttackVal, *this);
         if (globalMap[bulletX][bulletY] == nullptr) {
             MapUtils::updateAxis(bulletX, bulletY, bullet);
             return true;

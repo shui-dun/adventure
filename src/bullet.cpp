@@ -2,17 +2,13 @@
 #include "mixin.h"
 #include "enemy.h"
 
-Bullet::Bullet(int x, int y, int direction, int attackVal) {
-    xPos = x;
-    yPos = y;
-    symbol = '*' | COLOR_PAIR(NORMAL_INIT);
-    healthPoint = 1;
-    defendVal = 0;
-    this->attackVal = attackVal;
-    timeUnits = 4;
-    curTimeUnit = timeUnits - 1;
-    this->direction = direction;
-
+Bullet::Bullet(int xPos, int yPos, int direction, int attackVal, Hero &launcher)
+        : Item(xPos, yPos, '*' | COLOR_PAIR(NORMAL_INIT)),
+          Vulnerable(1, 0),
+          Aggressive(attackVal),
+          Movable(4, 3),
+          direction(direction),
+          launcher(launcher) {
 }
 
 bool Bullet::move() {
@@ -47,7 +43,7 @@ void Bullet::attack(Item *item) {
         bool alive = impacted->beAttacked(*this);
         int descHP = impacted->healthPoint;
         if (dynamic_cast<Enemy *>(impacted)) {
-            myHero->score += originHP - descHP;
+            launcher.score += originHP - descHP;
         }
         if (!alive) {
             MapUtils::updateAxis(item->xPos, item->yPos, nullptr);

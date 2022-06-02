@@ -7,6 +7,8 @@ using namespace std;
 
 class Movable {
 public:
+    Movable(unsigned int timeUnits, unsigned int curTimeUnit) : timeUnits(timeUnits), curTimeUnit(curTimeUnit) {}
+
     virtual ~Movable() = default;
 
     unsigned int timeUnits; // 两次移动间的时间间隔

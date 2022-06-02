@@ -5,16 +5,9 @@
 #include "map.h"
 
 
-RandomWalkEnemy::RandomWalkEnemy(int x, int y) {
-    xPos = x;
-    yPos = y;
-    healthPoint = 6;
-    symbol = '+' | COLOR_PAIR(NORMAL_INIT);
-    attackVal = 3;
-    defendVal = 1;
-    timeUnits = 6;
-    curTimeUnit = randEngine() % timeUnits;
-}
+RandomWalkEnemy::RandomWalkEnemy(int xPos, int yPos)
+        : Enemy(xPos, yPos, '+' | COLOR_PAIR(NORMAL_INIT), 6, 1,
+                3, 6, randEngine() % 6) {}
 
 bool RandomWalkEnemy::move() {
     uniform_int_distribution<int> distribution(0, 3);
@@ -35,7 +28,7 @@ bool RandomWalkEnemy::move() {
             int originHP = healthPoint;
             alive = beAttacked(*aggressive);
             if (dynamic_cast<Bullet *>(aggressive)) {
-                myHero->score += originHP - healthPoint;
+                dynamic_cast<Bullet *>(aggressive)->launcher.score += originHP - healthPoint;
             }
         }
         if (dynamic_cast<Vulnerable *>(globalMap[newX][newY])) {
@@ -60,16 +53,9 @@ bool RandomWalkEnemy::shouldIMove() {
     return MoveUtils::defaultShouldIMove(*this);
 }
 
-AStarEnemy::AStarEnemy(int x, int y) {
-    xPos = x;
-    yPos = y;
-    symbol = 'X' | COLOR_PAIR(NORMAL_INIT);
-    healthPoint = 6;
-    attackVal = 3;
-    defendVal = 1;
-    timeUnits = 7;
-    curTimeUnit = randEngine() % timeUnits;
-}
+AStarEnemy::AStarEnemy(int xPos, int yPos)
+        : Enemy(xPos, yPos, 'X' | COLOR_PAIR(NORMAL_INIT), 6, 1,
+                3, 7, randEngine() % timeUnits) {}
 
 bool AStarEnemy::move() {
     int newX = xPos, newY = yPos;

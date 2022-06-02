@@ -20,7 +20,7 @@ public:
 
     int direction;
 
-    Hero(int x, int y);
+    Hero(int xPos, int yPos);
 
     bool move() override;
 

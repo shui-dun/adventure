@@ -5,6 +5,8 @@
 
 class Aggressive {
 public:
+    Aggressive(int attackVal): attackVal(attackVal){}
+
     virtual ~Aggressive() = default;
 
     int attackVal;
@@ -12,6 +14,8 @@ public:
 
 class Vulnerable {
 public:
+    Vulnerable(int healthPoint, int defendVal) : healthPoint(healthPoint), defendVal(defendVal) {}
+
     virtual ~Vulnerable() = default;
 
     // 返回被攻击后是否生还
