@@ -26,20 +26,7 @@ bool Bullet::move() {
         return true;
     } else {
         MapUtils::updateAxis(xPos, yPos, nullptr);
-        Item *item = globalMap[newX][newY];
-        if (dynamic_cast<Vulnerable *>(item)) {
-            auto impacted = dynamic_cast<Vulnerable *>(item);
-            int originHP = impacted->healthPoint;
-            bool alive = impacted->beAttacked(*this);
-            int descHP = impacted->healthPoint;
-            if (dynamic_cast<Enemy *>(impacted)) {
-                myHero->score += originHP - descHP;
-            }
-            if (!alive) {
-                delete item;
-                MapUtils::updateAxis(newX, newY, nullptr);
-            }
-        }
+        attack(globalMap[newX][newY]);
         return false;
     }
 }
@@ -50,4 +37,20 @@ bool Bullet::beAttacked(Aggressive &attacker) {
 
 bool Bullet::shouldIMove() {
     return MoveUtils::defaultShouldIMove(*this);
+}
+
+void Bullet::attack(Item *item) {
+    if (dynamic_cast<Vulnerable *>(item)) {
+        auto impacted = dynamic_cast<Vulnerable *>(item);
+        int originHP = impacted->healthPoint;
+        bool alive = impacted->beAttacked(*this);
+        int descHP = impacted->healthPoint;
+        if (dynamic_cast<Enemy *>(impacted)) {
+            myHero->score += originHP - descHP;
+        }
+        if (!alive) {
+            MapUtils::updateAxis(item->xPos, item->yPos, nullptr);
+            delete item;
+        }
+    }
 }

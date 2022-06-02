@@ -17,6 +17,8 @@ public:
     bool shouldIMove() override;
 
     bool beAttacked(Aggressive &attacker) override;
+
+    void attack(Item *item);
 };
 
 #endif //ADVENTURE_BULLET_H

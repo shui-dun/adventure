@@ -50,18 +50,17 @@ bool Hero::move() {
             return true;
         }
     } else if (ch == ' ') {
-        auto bullet = new Bullet(xPos, yPos, direction, bulletAttackVal);
-        auto p = MoveUtils::moveWithDirection(*bullet, direction);
+        auto p = MoveUtils::moveWithDirection(*this, direction);
         int bulletX = p.first, bulletY = p.second;
+        auto bullet = new Bullet(bulletX, bulletY, direction, bulletAttackVal);
         if (globalMap[bulletX][bulletY] == nullptr) {
-            bullet->xPos = bulletX;
-            bullet->yPos = bulletY;
-            bullet->direction = direction;
             MapUtils::updateAxis(bulletX, bulletY, bullet);
             return true;
         } else {
+            bullet->attack(globalMap[bulletX][bulletY]);
             delete bullet;
             return true;
+
         }
     } else if (ch == 'Q') {
         return false;
