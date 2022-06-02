@@ -19,8 +19,7 @@ enum colors {
     NORMAL_INIT,
     NORMAL_INJURED,
     ME,
-    CURE_POTION,
-    STRENGTHEN_POTION
+    POTION
 };
 
 extern vector<vector<Item *>> globalMap;

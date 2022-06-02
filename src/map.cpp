@@ -28,8 +28,7 @@ void MapUtils::init() {
     init_pair(NORMAL_INIT, COLOR_BLUE, COLOR_WHITE);
     init_pair(NORMAL_INJURED, COLOR_RED, COLOR_WHITE);
     init_pair(ME, COLOR_CYAN, COLOR_WHITE);
-    init_pair(CURE_POTION, COLOR_WHITE, COLOR_GREEN);
-    init_pair(STRENGTHEN_POTION, COLOR_WHITE, COLOR_GREEN);
+    init_pair(POTION, COLOR_WHITE, COLOR_GREEN);
     attron(COLOR_PAIR(INFO));
     genWall();
     genRandomMap();
@@ -112,8 +111,8 @@ void MapUtils::createCharacters() {
 void MapUtils::showInfo() {
     while (true) {
         mapMutex.lock();
-        mvprintw(0, 1, "HP: %d ATK: %d SCORES: %d            ",
-                 myHero->healthPoint, myHero->bulletAttackVal, myHero->score);
+        mvprintw(0, 1, "HP: %d ATK: %d DEF: %d SCORES: %d            ",
+                 myHero->healthPoint, myHero->bulletAttackVal, myHero->defendVal, myHero->score);
         mapMutex.unlock();
         this_thread::sleep_for(chrono::milliseconds(500));
     }
@@ -133,12 +132,14 @@ void MapUtils::createRandomCharacter() {
     Item *item = nullptr;
     uniform_real_distribution<float> distribution(0.0, 1.0);
     double randVal = distribution(randEngine);
-    if (randVal < 0.9) {
+    if (randVal < 0.85) {
         item = new RandomWalkEnemy(xPos, yPos);
-    } else if (randVal < 0.95) {
+    } else if (randVal < 0.9) {
         item = new CurePotion(xPos, yPos);
-    } else {
+    } else if (randVal < 0.95) {
         item = new StrengthenPotion(xPos, yPos);
+    } else {
+        item = new DefendPotion(xPos, yPos);
     }
     updateAxis(xPos, yPos, item);
 }

@@ -25,4 +25,12 @@ public:
     void actOn(Hero &hero) override;
 };
 
+class DefendPotion : public Potion {
+    int value;
+public:
+    DefendPotion(int x, int y);
+
+    void actOn(Hero &hero) override;
+};
+
 #endif //ADVENTURE_POTION_H
