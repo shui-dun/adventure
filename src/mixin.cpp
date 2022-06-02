@@ -6,4 +6,6 @@ vector<vector<Item *>> globalMap;
 
 Hero *myHero;
 
+bool gameOver;
+
 mutex mapMutex;

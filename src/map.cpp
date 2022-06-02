@@ -104,7 +104,7 @@ void MapUtils::createCharacters() {
     while (true) {
         this_thread::sleep_for(chrono::milliseconds(4000));
         mapMutex.lock();
-        if (!myHero) {
+        if (gameOver) {
             mapMutex.unlock();
             return;
         }
@@ -115,9 +115,9 @@ void MapUtils::createCharacters() {
 }
 
 void MapUtils::showInfo() {
-    while (myHero) {
+    while (true) {
         mapMutex.lock();
-        if (!myHero) {
+        if (gameOver) {
             mapMutex.unlock();
             return;
         }
@@ -165,7 +165,7 @@ void MapUtils::showGameOver() {
         mvprintw(lines / 2 - 3 + i, cols / 2 - 25, strs[i]);
     }
     attron(COLOR_PAIR(INFO));
-    mvprintw(lines - 1, 0, "Press Big Q to Continue...");
+    mvprintw(lines - 1, 1, "Press Big Q to Continue...");
     refresh();
     while (getch() != 'Q') {
     }

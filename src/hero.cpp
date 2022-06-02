@@ -27,7 +27,7 @@ Hero::Hero(int x, int y) {
     xPos = x;
     yPos = y;
     symbol = 'A' | COLOR_PAIR(ME);
-    healthPoint = 20;
+    healthPoint = 1;
     bulletAttackVal = 3;
     defendVal = 1;
     timeUnits = 2;
@@ -64,7 +64,7 @@ bool Hero::move() {
                         return true;
                     } else {
                         MapUtils::updateAxis(newX, newY, nullptr);
-                        myHero = nullptr;
+                        gameOver = true;
                         return false;
                     }
                 } else if (aggressive) {
@@ -98,15 +98,15 @@ bool Hero::move() {
         }
     } else if (inputChar == 'Q') {
         MapUtils::updateAxis(xPos, yPos, nullptr);
-        myHero = nullptr;
+        gameOver = true;
         return false;
     } else if (inputChar == 'p') {
-        mvprintw(MapUtils::lines - 1, 0,
+        mvprintw(MapUtils::lines - 1, 1,
                  "Game Paused, Press p to Continue                               ");
         refresh();
         while (getch() != 'p') {
         }
-        mvprintw(MapUtils::lines - 1, 0,
+        mvprintw(MapUtils::lines - 1, 1,
                  "                                                               ");
         refresh();
         return true;
@@ -118,7 +118,7 @@ bool Hero::move() {
 bool Hero::beAttacked(Aggressive &attacker) {
     bool alive = AttackUtils::attack(attacker, *this, this->symbol);
     if (!alive) {
-        myHero = nullptr;
+        gameOver = true;
         return false;
     } else {
         return true;

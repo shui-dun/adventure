@@ -28,7 +28,7 @@ void MoveUtils::moveAllCharacters() {
     while (true) {
         this_thread::sleep_for(chrono::milliseconds(100));
         mapMutex.lock();
-        if (!myHero) {
+        if (gameOver) {
             mapMutex.unlock();
             return;
         }
@@ -59,7 +59,7 @@ void MoveUtils::moveMyHero() {
         this_thread::sleep_for(chrono::milliseconds(200));
         chtype inputChar = getch();
         mapMutex.lock();
-        if (!myHero) {
+        if (gameOver) {
             mapMutex.unlock();
             return;
         }

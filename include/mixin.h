@@ -27,6 +27,8 @@ extern vector<vector<Item *>> globalMap;
 
 extern Hero *myHero;
 
+extern bool gameOver;
+
 extern mutex mapMutex;
 
 #endif //ADVENTURE_MIXIN_H
