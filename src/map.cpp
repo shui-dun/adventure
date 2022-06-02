@@ -24,11 +24,10 @@ void MapUtils::init() {
     init_pair(ME, COLOR_CYAN, COLOR_WHITE);
     init_pair(CURE_POTION, COLOR_WHITE, COLOR_GREEN);
     init_pair(STRENGTHEN_POTION, COLOR_WHITE, COLOR_GREEN);
-    wbkgd(stdscr, COLOR_PAIR(BACKGROUND));
     attron(COLOR_PAIR(INFO));
     genWall();
     genRandomMap();
-    draw();
+    drawInit();
 }
 
 void MapUtils::genWall() {
@@ -65,13 +64,14 @@ void MapUtils::genRandomMap() {
     }
 }
 
-void MapUtils::draw() {
-    for (int i = 0; i < COLS; ++i) {
-        for (int j = 0; j < LINES; ++j) {
+void MapUtils::drawInit() {
+    for (int j = 0; j < LINES; ++j) {
+        move(j, 0);
+        for (int i = 0; i < COLS; ++i) {
             if (globalMap[i][j] == nullptr) {
-                mvaddch(j, i, ' ' | COLOR_PAIR(BACKGROUND));
+                addch(' ' | COLOR_PAIR(BACKGROUND));
             } else {
-                mvaddch(j, i, globalMap[i][j]->symbol);
+                addch(globalMap[i][j]->symbol);
             }
         }
     }
@@ -79,51 +79,27 @@ void MapUtils::draw() {
 }
 
 void MapUtils::updateAxis(int x, int y, Item *item) {
-    mapMutex.lock();
     globalMap[x][y] = item;
     if (item) {
         mvaddch(y, x, item->symbol);
     } else {
         mvaddch(y, x, ' ' | COLOR_PAIR(BACKGROUND));
     }
-    refresh();
-    mapMutex.unlock();
 }
 
 void MapUtils::createCharacters() {
-    thread tHero(MoveUtils::p, dynamic_cast<Movable *>(myHero));
-    tHero.detach();
-    int loop = 0;
+    mapMutex.lock();
+    for (int i = 0; i < 25; ++i) {
+        createRandomCharacter();
+    }
+    refresh();
+    mapMutex.unlock();
     while (true) {
-        if (loop < 20) {
-            loop += 1;
-        } else {
-            this_thread::sleep_for(chrono::milliseconds(4000));
-        }
-
-        int xPos, yPos;
-        uniform_int_distribution<int> xDistribution(1, COLS - 2);
-        uniform_int_distribution<int> yDistribution(1, LINES - 2);
-        while (true) {
-            xPos = xDistribution(randEngine);
-            yPos = yDistribution(randEngine);
-            if (globalMap[xPos][yPos] == nullptr) {
-                break;
-            }
-        }
-        Item *item = nullptr;
-        uniform_real_distribution<float> distribution(0.0, 1.0);
-        double randVal = distribution(randEngine);
-        if (randVal < 0.9) {
-            item = new RandomWalkEnemy(xPos, yPos);
-            thread t(MoveUtils::p, dynamic_cast<Movable *>(item));
-            t.detach();
-        } else if (randVal < 0.95) {
-            item = new CurePotion(xPos, yPos);
-        } else {
-            item = new StrengthenPotion(xPos, yPos);
-        }
-        updateAxis(xPos, yPos, item);
+        this_thread::sleep_for(chrono::milliseconds(4000));
+        mapMutex.lock();
+        createRandomCharacter();
+        refresh();
+        mapMutex.unlock();
     }
 }
 
@@ -134,4 +110,28 @@ void MapUtils::showInfo() {
         mapMutex.unlock();
         this_thread::sleep_for(chrono::milliseconds(500));
     }
+}
+
+void MapUtils::createRandomCharacter() {
+    int xPos, yPos;
+    uniform_int_distribution<int> xDistribution(1, COLS - 2);
+    uniform_int_distribution<int> yDistribution(1, LINES - 2);
+    while (true) {
+        xPos = xDistribution(randEngine);
+        yPos = yDistribution(randEngine);
+        if (globalMap[xPos][yPos] == nullptr) {
+            break;
+        }
+    }
+    Item *item = nullptr;
+    uniform_real_distribution<float> distribution(0.0, 1.0);
+    double randVal = distribution(randEngine);
+    if (randVal < 0.9) {
+        item = new RandomWalkEnemy(xPos, yPos);
+    } else if (randVal < 0.95) {
+        item = new CurePotion(xPos, yPos);
+    } else {
+        item = new StrengthenPotion(xPos, yPos);
+    }
+    updateAxis(xPos, yPos, item);
 }

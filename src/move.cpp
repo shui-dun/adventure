@@ -19,23 +19,48 @@ pair<int, int> MoveUtils::moveWithDirection(Item &item, int direction) {
     return {newX, newY};
 }
 
-// 每个线程
-void MoveUtils::p(Movable *character) {
-    Item *itemCharacter = dynamic_cast<Item *>(character);
-    int xPos = itemCharacter->xPos, yPos = itemCharacter->yPos;
-    int timeInterval = character->timeInterval;
+bool MoveUtils::defaultShouldIMove(Movable &movable) {
+    movable.curTimeUnit = (movable.curTimeUnit + 1) % movable.timeUnits;
+    return movable.curTimeUnit == 0;
+}
+
+void MoveUtils::moveAllCharacters() {
     while (true) {
-        this_thread::sleep_for(chrono::milliseconds(timeInterval));
-        // 如果是由于自己的move导致的死亡，move返回false，再由自己所处的线程修改globalMap并delete自己
-        // 如果是被别人杀死的，由杀死它的线程修改globalMap并delete
-        if (globalMap[xPos][yPos] != itemCharacter) {
-            return;
+        this_thread::sleep_for(chrono::milliseconds(100));
+        mapMutex.lock();
+        for (int i = 1; i < COLS - 1; ++i) {
+            for (int j = 1; j < LINES - 1; ++j) {
+                auto movable = dynamic_cast<Movable *>(globalMap[i][j]);
+                if (movable == nullptr)
+                    continue;
+                if (dynamic_cast<Hero *>(movable))
+                    continue;
+                if (!movable->shouldIMove())
+                    continue;
+                auto item = dynamic_cast<Item *>(movable);
+                if (!movable->move()) {
+                    // 如果是由于自己的move导致的死亡，move返回false，再由自己所处的线程修改globalMap并delete自己
+                    // 如果是被别人杀死的，由杀死它的对象修改globalMap并delete
+                    MapUtils::updateAxis(item->xPos, item->yPos, nullptr);
+                    delete movable;
+                }
+            }
         }
-        bool alive = character->move();
-        xPos = itemCharacter->xPos, yPos = itemCharacter->yPos;
-        if (!alive) {
-            MapUtils::updateAxis(xPos, yPos, nullptr);
-            delete character;
+        refresh();
+        mapMutex.unlock();
+    }
+}
+
+void MoveUtils::moveMyHero() {
+    while (true) {
+        this_thread::sleep_for(chrono::milliseconds(100));
+        if (!myHero->shouldIMove())
+            continue;
+        if (!myHero->move()) {
+            MapUtils::updateAxis(myHero->xPos, myHero->yPos, nullptr);
+            delete myHero;
         }
+        refresh();
+        mapMutex.unlock();
     }
 }

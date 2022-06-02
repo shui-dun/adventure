@@ -5,6 +5,7 @@
 #include "bullet.h"
 
 class MapUtils {
+    static void createRandomCharacter();
 public:
 
     static void init();
@@ -13,7 +14,7 @@ public:
 
     static void genRandomMap();
 
-    static void draw();
+    static void drawInit();
 
     static void updateAxis(int x, int y, Item *item);
 

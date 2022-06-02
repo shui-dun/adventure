@@ -8,7 +8,8 @@ Bullet::Bullet(int x, int y, int direction, int attackVal) {
     symbol = '*' | COLOR_PAIR(NORMAL_INIT);
     healthPoint = 1;
     this->attackVal = attackVal;
-    timeInterval = 400;
+    timeUnits = 4;
+    curTimeUnit = timeUnits - 1;
     this->direction = direction;
 
 }
@@ -45,4 +46,8 @@ bool Bullet::move() {
 
 bool Bullet::beAttacked(Aggressive &attacker) {
     return false;
+}
+
+bool Bullet::shouldIMove() {
+    return MoveUtils::defaultShouldIMove(*this);
 }

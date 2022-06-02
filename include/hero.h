@@ -20,6 +20,8 @@ public:
     bool move() override ;
 
     bool beAttacked(Aggressive &attacker) override;
+
+    bool shouldIMove() override;
 };
 
 #endif //ADVENTURE_HERO_H

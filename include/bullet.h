@@ -14,6 +14,8 @@ public:
 
     bool move() override;
 
+    bool shouldIMove() override;
+
     bool beAttacked(Aggressive &attacker) override;
 };
 

@@ -22,52 +22,46 @@ Hero::Hero(int x, int y) {
     yPos = y;
     symbol = 'A' | COLOR_PAIR(ME);
     healthPoint = 20;
-    timeInterval = 200;
+    timeUnits = 2;
+    curTimeUnit = randEngine() % timeUnits;
     direction = 0;
     score = 0;
 }
 
 bool Hero::move() {
-    chtype ch;
+    chtype ch = getch();
+    mapMutex.lock();
     int newX = xPos, newY = yPos;
-    while (ch = getch()) {
-        if (ch == 'w') {
-            newY -= 1;
-            direction = 0;
-            break;
-        } else if (ch == 's') {
-            newY += 1;
-            direction = 1;
-            break;
-        } else if (ch == 'a') {
-            newX -= 1;
-            direction = 2;
-            break;
-        } else if (ch == 'd') {
-            newX += 1;
-            direction = 3;
-            break;
-        } else if (ch == ' ') {
-            Bullet *bullet = new Bullet(xPos, yPos, direction, bulletAttackVal);
-            auto p = MoveUtils::moveWithDirection(*bullet, direction);
-            int bulletX = p.first, bulletY = p.second;
-            if (globalMap[bulletX][bulletY] == nullptr) {
-                bullet->xPos = bulletX;
-                bullet->yPos = bulletY;
-                bullet->direction = direction;
-                MapUtils::updateAxis(bulletX, bulletY, bullet);
-                thread t(MoveUtils::p, bullet);
-                t.detach();
-                return true;
-            } else {
-                delete bullet;
-                return true;
-            }
-        } else if (ch == 'Q') {
-            return false;
+    if (ch == 'w') {
+        newY -= 1;
+        direction = 0;
+    } else if (ch == 's') {
+        newY += 1;
+        direction = 1;
+    } else if (ch == 'a') {
+        newX -= 1;
+        direction = 2;
+    } else if (ch == 'd') {
+        newX += 1;
+        direction = 3;
+    } else if (ch == ' ') {
+        Bullet *bullet = new Bullet(xPos, yPos, direction, bulletAttackVal);
+        auto p = MoveUtils::moveWithDirection(*bullet, direction);
+        int bulletX = p.first, bulletY = p.second;
+        if (globalMap[bulletX][bulletY] == nullptr) {
+            bullet->xPos = bulletX;
+            bullet->yPos = bulletY;
+            bullet->direction = direction;
+            MapUtils::updateAxis(bulletX, bulletY, bullet);
+            return true;
         } else {
+            delete bullet;
             return true;
         }
+    } else if (ch == 'Q') {
+        return false;
+    } else {
+        return true;
     }
     updateSymbol();
     Item *item = globalMap[newX][newY];
@@ -106,5 +100,9 @@ bool Hero::move() {
 
 bool Hero::beAttacked(Aggressive &attacker) {
     return AttackUtils::attack(attacker, *this, this->symbol);
+}
+
+bool Hero::shouldIMove() {
+    return MoveUtils::defaultShouldIMove(*this);
 }
 

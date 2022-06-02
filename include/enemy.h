@@ -17,6 +17,8 @@ public:
 
     bool beAttacked(Aggressive &attacker) override;
 
+    bool shouldIMove() override;
+
 };
 
 class AStarEnemy : public Enemy {
@@ -26,6 +28,8 @@ public:
     bool move() override;
 
     bool beAttacked(Aggressive &attacker) override;
+
+    bool shouldIMove() override;
 
 };
 

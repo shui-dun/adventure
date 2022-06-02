@@ -11,7 +11,8 @@ RandomWalkEnemy::RandomWalkEnemy(int x, int y) {
     healthPoint = 6;
     symbol = '+' | COLOR_PAIR(NORMAL_INIT);
     attackVal = 2;
-    timeInterval = 600;
+    timeUnits = 6;
+    curTimeUnit = randEngine() % timeUnits;
 }
 
 bool RandomWalkEnemy::move() {
@@ -52,13 +53,18 @@ bool RandomWalkEnemy::beAttacked(Aggressive &attacker) {
     return AttackUtils::attack(attacker, *this, '+' | COLOR_PAIR(NORMAL_INJURED));
 }
 
+bool RandomWalkEnemy::shouldIMove() {
+    return MoveUtils::defaultShouldIMove(*this);
+}
+
 AStarEnemy::AStarEnemy(int x, int y) {
     xPos = x;
     yPos = y;
     symbol = 'X' | COLOR_PAIR(NORMAL_INIT);
     healthPoint = 6;
     attackVal = 2;
-    timeInterval = 800;
+    timeUnits = 7;
+    curTimeUnit = randEngine() % timeUnits;
 }
 
 bool AStarEnemy::move() {
@@ -69,4 +75,8 @@ bool AStarEnemy::move() {
 
 bool AStarEnemy::beAttacked(Aggressive &attacker) {
     return AttackUtils::attack(attacker, *this, 'X' | COLOR_PAIR(NORMAL_INJURED));
+}
+
+bool AStarEnemy::shouldIMove() {
+    return MoveUtils::defaultShouldIMove(*this);
 }
