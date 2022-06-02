@@ -26,6 +26,8 @@ public:
     static void createCharacters();
 
     static void showInfo();
+
+    static void showGameOver();
 };
 
 

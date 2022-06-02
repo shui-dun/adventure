@@ -28,6 +28,10 @@ void MoveUtils::moveAllCharacters() {
     while (true) {
         this_thread::sleep_for(chrono::milliseconds(100));
         mapMutex.lock();
+        if (!myHero) {
+            mapMutex.unlock();
+            return;
+        }
         for (int i = 1; i < MapUtils::cols - 1; ++i) {
             for (int j = 1; j < MapUtils::lines - 1; ++j) {
                 auto movable = dynamic_cast<Movable *>(globalMap[i][j]);
@@ -39,9 +43,8 @@ void MoveUtils::moveAllCharacters() {
                     continue;
                 auto item = dynamic_cast<Item *>(movable);
                 if (!movable->move()) {
-                    // 如果是由于自己的move导致的死亡，move返回false，再由自己所处的线程修改globalMap并delete自己
-                    // 如果是被别人杀死的，由杀死它的对象修改globalMap并delete
-                    MapUtils::updateAxis(item->xPos, item->yPos, nullptr);
+                    // 如果是由于自己的move导致的死亡，move返回false，再由调用方delete它
+                    // 如果是被别人杀死的，由杀死它的对象delete它
                     delete movable;
                 }
             }
@@ -53,11 +56,15 @@ void MoveUtils::moveAllCharacters() {
 
 void MoveUtils::moveMyHero() {
     while (true) {
-        this_thread::sleep_for(chrono::milliseconds(100));
-        if (!myHero->shouldIMove())
-            continue;
+        this_thread::sleep_for(chrono::milliseconds(200));
+        chtype inputChar = getch();
+        mapMutex.lock();
+        if (!myHero) {
+            mapMutex.unlock();
+            return;
+        }
+        myHero->inputChar = inputChar;
         if (!myHero->move()) {
-            MapUtils::updateAxis(myHero->xPos, myHero->yPos, nullptr);
             delete myHero;
         }
         refresh();

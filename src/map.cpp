@@ -14,14 +14,15 @@ int MapUtils::cols = 0;
 
 void MapUtils::init() {
     initscr();
-    lines = LINES < 25 ? LINES : 25;
-    cols = COLS < 50 ? COLS : 50;
+    lines = LINES < 26 ? LINES : 26;
+    cols = COLS < 52 ? COLS : 52;
     raw();
     noecho();
     curs_set(0);
     start_color();
     init_pair(BACKGROUND, COLOR_WHITE, COLOR_WHITE);
     init_pair(INFO, COLOR_WHITE, COLOR_BLACK);
+    init_pair(INFO2, COLOR_BLACK, COLOR_WHITE);
     init_pair(SOLID_BARRIER, COLOR_BLACK, COLOR_BLACK);
     init_pair(WEAK_BARRIER_INIT, COLOR_BLUE, COLOR_BLUE);
     init_pair(WEAK_BARRIER_INJURED, COLOR_RED, COLOR_RED);
@@ -102,6 +103,10 @@ void MapUtils::createCharacters() {
     while (true) {
         this_thread::sleep_for(chrono::milliseconds(4000));
         mapMutex.lock();
+        if (!myHero) {
+            mapMutex.unlock();
+            return;
+        }
         createRandomCharacter();
         refresh();
         mapMutex.unlock();
@@ -109,8 +114,12 @@ void MapUtils::createCharacters() {
 }
 
 void MapUtils::showInfo() {
-    while (true) {
+    while (myHero) {
         mapMutex.lock();
+        if (!myHero) {
+            mapMutex.unlock();
+            return;
+        }
         mvprintw(0, 1, "HP: %d ATK: %d DEF: %d SCORES: %d            ",
                  myHero->healthPoint, myHero->bulletAttackVal, myHero->defendVal, myHero->score);
         mapMutex.unlock();
@@ -142,4 +151,20 @@ void MapUtils::createRandomCharacter() {
         item = new DefendPotion(xPos, yPos);
     }
     updateAxis(xPos, yPos, item);
+}
+
+void MapUtils::showGameOver() {
+    vector<const char *> strs = {"  __ _  __ _ _ __ ___   ___    _____   _____ _ __",
+                                 " / _` |/ _` | '_ ` _ \\ / _ \\  / _ \\ \\ / / _ \\ '__|",
+                                 "| (_| | (_| | | | | | |  __/ | (_) \\ V /  __/ |",
+                                 " \\__, |\\__,_|_| |_| |_|\\___|  \\___/ \\_/ \\___|_|",
+                                 " |___/"};
+    attron(COLOR_PAIR(INFO2));
+    for (int i = 0; i < strs.size(); ++i) {
+        mvprintw(lines / 2 - 3 + i, cols / 2 - 25, strs[i]);
+    }
+    attron(COLOR_PAIR(INFO));
+    mvprintw(lines - 1, 0, "Press Any Key to Continue...");
+    getch();
+    endwin();
 }

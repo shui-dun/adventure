@@ -17,12 +17,13 @@ int main() {
     randEngine.seed(rd());
     MapUtils::init();
     thread t1(MapUtils::createCharacters);
-    thread t2(MapUtils::showInfo);
-    thread t3(MoveUtils::moveMyHero);
-    thread t4(MoveUtils::moveAllCharacters);
-    t1.join();
-    t2.join();
-    t3.join();
+    thread t2(MoveUtils::moveMyHero);
+    thread t3(MoveUtils::moveAllCharacters);
+    thread t4(MapUtils::showInfo);
+    t1.detach();
+    t2.detach();
+    t3.detach();
     t4.join();
+    MapUtils::showGameOver();
     return 0;
 }

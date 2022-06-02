@@ -47,6 +47,8 @@ bool RandomWalkEnemy::move() {
             break;
         }
     }
+    if (!alive)
+        MapUtils::updateAxis(xPos, yPos, nullptr);
     return alive;
 }
 

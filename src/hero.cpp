@@ -27,7 +27,7 @@ Hero::Hero(int x, int y) {
     xPos = x;
     yPos = y;
     symbol = 'A' | COLOR_PAIR(ME);
-    healthPoint = 20;
+    healthPoint = 1;
     bulletAttackVal = 3;
     defendVal = 1;
     timeUnits = 2;
@@ -37,21 +37,53 @@ Hero::Hero(int x, int y) {
 }
 
 bool Hero::move() {
-    chtype ch = getch();
-    mapMutex.lock();
     int newX, newY;
-    if (directMap.find(ch) != directMap.end()) {
-        if (direction == directMap[ch]) {
+    if (directMap.find(inputChar) != directMap.end()) {
+        if (direction == directMap[inputChar]) {
             auto p = MoveUtils::moveWithDirection(*this, direction);
             newX = p.first;
             newY = p.second;
+            updateSymbol();
+            Item *item = globalMap[newX][newY];
+            if (item == nullptr) {
+                MapUtils::updateAxis(xPos, yPos, nullptr);
+                MapUtils::updateAxis(newX, newY, this);
+                xPos = newX;
+                yPos = newY;
+                return true;
+            } else {
+                auto aggressive = dynamic_cast<Aggressive *>(item);
+                auto potion = dynamic_cast<Potion *>(item);
+                if (potion) {
+                    potion->actOn(*this);
+                    MapUtils::updateAxis(xPos, yPos, nullptr);
+                    if (healthPoint > 0) {
+                        MapUtils::updateAxis(newX, newY, this);
+                        xPos = newX;
+                        yPos = newY;
+                        return true;
+                    } else {
+                        MapUtils::updateAxis(newX, newY, nullptr);
+                        return false;
+                    }
+                } else if (aggressive) {
+                    if (!beAttacked(*aggressive)) {
+                        MapUtils::updateAxis(xPos, yPos, nullptr);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+            }
         } else {
-            direction = directMap[ch];
+            direction = directMap[inputChar];
             updateSymbol();
             MapUtils::updateAxis(xPos, yPos, this);
             return true;
         }
-    } else if (ch == ' ') {
+    } else if (inputChar == ' ') {
         auto p = MoveUtils::moveWithDirection(*this, direction);
         int bulletX = p.first, bulletY = p.second;
         auto bullet = new Bullet(bulletX, bulletY, direction, bulletAttackVal);
@@ -62,53 +94,26 @@ bool Hero::move() {
             bullet->attack(globalMap[bulletX][bulletY]);
             delete bullet;
             return true;
-
         }
-    } else if (ch == 'Q') {
+    } else if (inputChar == 'Q') {
+        MapUtils::updateAxis(xPos, yPos, nullptr);
         return false;
     } else {
         return true;
     }
-    updateSymbol();
-    Item *item = globalMap[newX][newY];
-    if (item == nullptr) {
-        MapUtils::updateAxis(xPos, yPos, nullptr);
-        MapUtils::updateAxis(newX, newY, this);
-        xPos = newX;
-        yPos = newY;
-        return true;
-    } else {
-        auto aggressive = dynamic_cast<Aggressive *>(item);
-        auto potion = dynamic_cast<Potion *>(item);
-        if (potion) {
-            potion->actOn(*this);
-            MapUtils::updateAxis(xPos, yPos, nullptr);
-            if (healthPoint > 0) {
-                MapUtils::updateAxis(newX, newY, this);
-                xPos = newX;
-                yPos = newY;
-                return true;
-            } else {
-                return false;
-            }
-        } else if (aggressive) {
-            if (!beAttacked(*aggressive)) {
-                MapUtils::updateAxis(xPos, yPos, nullptr);
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return true;
-        }
-    }
 }
 
 bool Hero::beAttacked(Aggressive &attacker) {
-    return AttackUtils::attack(attacker, *this, this->symbol);
+    bool alive = AttackUtils::attack(attacker, *this, this->symbol);
+    if (!alive) {
+        myHero = nullptr;
+        return false;
+    } else {
+        return true;
+    }
 }
 
 bool Hero::shouldIMove() {
-    return MoveUtils::defaultShouldIMove(*this);
+    return true;
 }
 
