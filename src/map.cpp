@@ -8,8 +8,15 @@
 
 using namespace std;
 
+int MapUtils::lines = 0;
+
+int MapUtils::cols = 0;
+
 void MapUtils::init() {
     initscr();
+    resizeterm();
+    lines = LINES < 25 ? LINES : 25;
+    cols = COLS < 50 ? COLS : 50;
     raw();
     noecho();
     curs_set(0);
@@ -31,23 +38,23 @@ void MapUtils::init() {
 }
 
 void MapUtils::genWall() {
-    globalMap.assign(COLS, vector<Item *>(LINES, nullptr));
-    for (int i = 0; i < LINES; ++i) {
+    globalMap.assign(cols, vector<Item *>(lines, nullptr));
+    for (int i = 0; i < lines; ++i) {
         globalMap[0][i] = new SolidBarrier(0, i);
-        globalMap[COLS - 1][i] = new SolidBarrier(COLS - 1, i);
+        globalMap[cols - 1][i] = new SolidBarrier(cols - 1, i);
     }
-    for (int i = 1; i < COLS - 1; ++i) {
+    for (int i = 1; i < cols - 1; ++i) {
         globalMap[i][0] = new SolidBarrier(i, 0);
-        globalMap[i][LINES - 1] = new SolidBarrier(i, LINES - 1);
+        globalMap[i][lines - 1] = new SolidBarrier(i, lines - 1);
     }
-    myHero = new Hero(COLS - 2, LINES - 2);
-    globalMap[COLS - 2][LINES - 2] = myHero;
+    myHero = new Hero(cols - 2, lines - 2);
+    globalMap[cols - 2][lines - 2] = myHero;
 }
 
 void MapUtils::genRandomMap() {
 // 除了这种点状地图，以后还要产生几种迷宫地图
-    for (int i = 1; i < COLS - 1; ++i) {
-        for (int j = 1; j < LINES - 1; ++j) {
+    for (int i = 1; i < cols - 1; ++i) {
+        for (int j = 1; j < lines - 1; ++j) {
             if (globalMap[i][j] != nullptr) {
                 continue;
             }
@@ -65,9 +72,9 @@ void MapUtils::genRandomMap() {
 }
 
 void MapUtils::drawInit() {
-    for (int j = 0; j < LINES; ++j) {
+    for (int j = 0; j < lines; ++j) {
         move(j, 0);
-        for (int i = 0; i < COLS; ++i) {
+        for (int i = 0; i < cols; ++i) {
             if (globalMap[i][j] == nullptr) {
                 addch(' ' | COLOR_PAIR(BACKGROUND));
             } else {
@@ -114,8 +121,8 @@ void MapUtils::showInfo() {
 
 void MapUtils::createRandomCharacter() {
     int xPos, yPos;
-    uniform_int_distribution<int> xDistribution(1, COLS - 2);
-    uniform_int_distribution<int> yDistribution(1, LINES - 2);
+    uniform_int_distribution<int> xDistribution(1, cols - 2);
+    uniform_int_distribution<int> yDistribution(1, lines - 2);
     while (true) {
         xPos = xDistribution(randEngine);
         yPos = yDistribution(randEngine);

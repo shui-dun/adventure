@@ -28,8 +28,8 @@ void MoveUtils::moveAllCharacters() {
     while (true) {
         this_thread::sleep_for(chrono::milliseconds(100));
         mapMutex.lock();
-        for (int i = 1; i < COLS - 1; ++i) {
-            for (int j = 1; j < LINES - 1; ++j) {
+        for (int i = 1; i < MapUtils::cols - 1; ++i) {
+            for (int j = 1; j < MapUtils::lines - 1; ++j) {
                 auto movable = dynamic_cast<Movable *>(globalMap[i][j]);
                 if (movable == nullptr)
                     continue;

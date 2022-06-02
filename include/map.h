@@ -6,7 +6,12 @@
 
 class MapUtils {
     static void createRandomCharacter();
+
 public:
+
+    static int lines;
+
+    static int cols;
 
     static void init();
 

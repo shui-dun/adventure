@@ -2,7 +2,7 @@
 
 ## 已知的bug
 
-- 疯狂按空格，程序会异常终止，segmentation fault (core dumped)
+- 在低配机器上，疯狂按空格，程序会异常终止，segmentation fault (core dumped)
 
 ## 未来改进
 
