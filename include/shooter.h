@@ -5,6 +5,7 @@
 #include "attack.h"
 #include "item.h"
 #include <map>
+#include <vector>
 
 
 class Shooter : public Item, public Vulnerable, public Movable {
@@ -31,7 +32,7 @@ private:
 
     static map<chtype, int> directMap;
 
-    Item *findNearestEnemy();
+    vector<Item *> findNearestEnemies();
 
     void mindControl();
 

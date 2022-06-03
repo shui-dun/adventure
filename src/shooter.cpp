@@ -90,34 +90,28 @@ bool HeroShooter::act() {
     }
 }
 
-Item *HeroShooter::findNearestEnemy() {
-    int newX = xPos, newY = yPos;
-    while (true) {
-        if (direction == 0) {
-            newY -= 1;
-        } else if (direction == 1) {
-            newY += 1;
-        } else if (direction == 2) {
-            newX -= 1;
-        } else {
-            newX += 1;
+vector<Item *> HeroShooter::findNearestEnemies() {
+    vector<Item *> v;
+    for (int newX = xPos - 2; newX <= xPos + 2; newX++) {
+        for (int newY = yPos - 2; newY <= yPos + 2; newY++) {
+            if (!MapUtils::isAxisLegal(newX, newY))
+                continue;
+            auto item = globalMap[newX][newY];
+            if (item == nullptr)
+                continue;
+            if (item->camp != camp && item->camp != OBJECT)
+                v.push_back(item);
         }
-        if (!MapUtils::isAxisLegal(newX, newY))
-            return nullptr;
-        auto item = globalMap[newX][newY];
-        if (item == nullptr)
-            continue;
-        if (item->camp != camp && item->camp != OBJECT)
-            return item;
     }
+    return v;
 }
 
 void HeroShooter::mindControl() {
-    auto nearestEnemy = findNearestEnemy();
-    if (nearestEnemy == nullptr)
-        return;
-    nearestEnemy->camp = camp;
-    nearestEnemy->color = COLOR_PAIR(MIND_CONTROL);
+    for (auto enemy: findNearestEnemies()) {
+        enemy->camp = camp;
+        enemy->color = COLOR_PAIR(MIND_CONTROL);
+        MapUtils::updateAxis(enemy->xPos, enemy->yPos, enemy);
+    }
 }
 
 
