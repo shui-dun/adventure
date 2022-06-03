@@ -5,7 +5,7 @@
 #include "map.h"
 
 
-pair<int, int> MoveUtils::moveWithDirection(Item &item, int direction) {
+pair<int, int> MoveUtils::nextPosOfDirection(Item &item, int direction) {
     int newX = item.xPos, newY = item.yPos;
     if (direction == 0) {
         newY -= 1;
@@ -19,7 +19,7 @@ pair<int, int> MoveUtils::moveWithDirection(Item &item, int direction) {
     return {newX, newY};
 }
 
-bool MoveUtils::defaultShouldIMove(Movable &movable) {
+bool MoveUtils::shouldMove(Movable &movable) {
     movable.curTimeUnit = (movable.curTimeUnit + 1) % movable.timeUnits;
     return movable.curTimeUnit == 0;
 }
@@ -39,14 +39,9 @@ void MoveUtils::moveAllCharacters() {
                     continue;
                 if (dynamic_cast<Hero *>(movable))
                     continue;
-                if (!movable->shouldIMove())
+                if (!shouldMove(*movable))
                     continue;
-                auto item = dynamic_cast<Item *>(movable);
-                if (!movable->move()) {
-                    // 如果是由于自己的move导致的死亡，move返回false，再由调用方delete它
-                    // 如果是被别人杀死的，由杀死它的对象delete它
-                    delete movable;
-                }
+                movable->act();
             }
         }
         refresh();
@@ -64,10 +59,15 @@ void MoveUtils::moveMyHero() {
             return;
         }
         myHero->inputChar = inputChar;
-        if (!myHero->move()) {
-            delete myHero;
-        }
+        myHero->act();
         refresh();
         mapMutex.unlock();
     }
+}
+
+void MoveUtils::moveToPos(Item &item, int newX, int newY) {
+    MapUtils::updateAxis(item.xPos, item.yPos, nullptr);
+    MapUtils::updateAxis(newX, newY, &item);
+    item.xPos = newX;
+    item.yPos = newY;
 }

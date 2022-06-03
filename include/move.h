@@ -15,16 +15,16 @@ public:
 
     unsigned int curTimeUnit;
 
-    virtual bool move() = 0;
-
-    virtual bool shouldIMove() = 0;
+    virtual bool act() = 0;
 };
 
 class MoveUtils {
 public:
-    static pair<int, int> moveWithDirection(Item &item, int direction);
+    static pair<int, int> nextPosOfDirection(Item &item, int direction);
 
-    static bool defaultShouldIMove(Movable &movable);
+    static void moveToPos(Item &item, int newX, int newY);
+
+    static bool shouldMove(Movable &movable);
 
     static void moveAllCharacters();
 

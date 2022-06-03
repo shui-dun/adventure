@@ -15,13 +15,9 @@ public:
 
     Bullet(int xPos, int yPos, int direction, int attackVal, Hero &launcher);
 
-    bool move() override;
+    bool act() override;
 
-    bool shouldIMove() override;
-
-    bool beAttacked(Aggressive &attacker) override;
-
-    void attack(Item *item);
+    bool attack(Vulnerable &vulnerable) override;
 };
 
 #endif //ADVENTURE_BULLET_H

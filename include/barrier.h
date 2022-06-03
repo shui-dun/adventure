@@ -21,7 +21,6 @@ public:
 
     WeakBarrier(int xPos, int yPos);
 
-    bool beAttacked(Aggressive &attacker) override;
 };
 
 

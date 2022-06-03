@@ -22,11 +22,7 @@ public:
 
     Hero(int xPos, int yPos);
 
-    bool move() override;
-
-    bool beAttacked(Aggressive &attacker) override;
-
-    bool shouldIMove() override;
+    bool act() override;
 };
 
 #endif //ADVENTURE_HERO_H

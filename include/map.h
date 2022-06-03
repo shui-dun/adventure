@@ -27,6 +27,8 @@ public:
 
     static void showInfo();
 
+    static void pause();
+
     static void showGameOver();
 };
 

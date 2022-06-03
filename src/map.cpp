@@ -18,7 +18,7 @@ void MapUtils::init() {
     cols = COLS < 52 ? COLS : 52;
     raw();
     noecho();
-    keypad(stdscr,TRUE);
+    keypad(stdscr, TRUE);
     curs_set(0);
     start_color();
     init_pair(BACKGROUND, COLOR_WHITE, COLOR_WHITE);
@@ -170,4 +170,15 @@ void MapUtils::showGameOver() {
     while (getch() != 'Q') {
     }
     endwin();
+}
+
+void MapUtils::pause() {
+    mvprintw(MapUtils::lines - 1, 1,
+             "Game Paused, Press p to Continue                               ");
+    refresh();
+    while (getch() != 'p') {
+    }
+    mvprintw(MapUtils::lines - 1, 1,
+             "                                                               ");
+    refresh();
 }

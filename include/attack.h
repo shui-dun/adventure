@@ -3,15 +3,6 @@
 
 #include <curses.h>
 
-class Aggressive {
-public:
-    Aggressive(int attackVal) : attackVal(attackVal) {}
-
-    virtual ~Aggressive() = default;
-
-    int attackVal;
-};
-
 class Vulnerable {
 public:
     Vulnerable(int healthPoint, int defendVal, chtype injuredSymbol)
@@ -19,9 +10,6 @@ public:
               initHealthPoint(healthPoint), injuredSymbol(injuredSymbol) {}
 
     virtual ~Vulnerable() = default;
-
-    // 返回被攻击后是否生还
-    virtual bool beAttacked(Aggressive &attacker) = 0;
 
     int healthPoint;
 
@@ -32,9 +20,20 @@ public:
     chtype injuredSymbol;
 };
 
+class Aggressive {
+public:
+    Aggressive(int attackVal) : attackVal(attackVal) {}
+
+    virtual ~Aggressive() = default;
+
+    int attackVal;
+
+    virtual bool attack(Vulnerable &vulnerable) = 0;
+};
+
 class AttackUtils {
 public:
-    static bool attack(Aggressive &attacker, Vulnerable &attacked);
+    static bool attack(int attackVal, Vulnerable &attacked);
 };
 
 

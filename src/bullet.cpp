@@ -8,46 +8,35 @@ Bullet::Bullet(int xPos, int yPos, int direction, int attackVal, Hero &launcher)
           Aggressive(attackVal),
           Movable(4, 3),
           direction(direction),
-          launcher(launcher) {
-}
+          launcher(launcher) {}
 
-bool Bullet::move() {
-    auto p = MoveUtils::moveWithDirection(*this, direction);
+bool Bullet::act() {
+    auto p = MoveUtils::nextPosOfDirection(*this, direction);
     int newX = p.first, newY = p.second;
-
     if (globalMap[newX][newY] == nullptr) {
-        MapUtils::updateAxis(xPos, yPos, nullptr);
-        MapUtils::updateAxis(newX, newY, this);
-        xPos = newX;
-        yPos = newY;
+        MoveUtils::moveToPos(*this, newX, newY);
         return true;
     } else {
-        MapUtils::updateAxis(xPos, yPos, nullptr);
-        attack(globalMap[newX][newY]);
+        if (dynamic_cast<Vulnerable *>(globalMap[newX][newY])) {
+            attack(*dynamic_cast<Vulnerable *>(globalMap[newX][newY]));
+        }
+        AttackUtils::attack(1, *this);
         return false;
     }
 }
 
-bool Bullet::beAttacked(Aggressive &attacker) {
-    return false;
-}
-
-bool Bullet::shouldIMove() {
-    return MoveUtils::defaultShouldIMove(*this);
-}
-
-void Bullet::attack(Item *item) {
-    if (dynamic_cast<Vulnerable *>(item)) {
-        auto impacted = dynamic_cast<Vulnerable *>(item);
-        int originHP = impacted->healthPoint;
-        bool alive = impacted->beAttacked(*this);
-        int descHP = impacted->healthPoint;
-        if (dynamic_cast<Enemy *>(impacted)) {
-            launcher.score += originHP - descHP;
-        }
-        if (!alive) {
-            MapUtils::updateAxis(item->xPos, item->yPos, nullptr);
-            delete item;
-        }
+bool Bullet::attack(Vulnerable &vulnerable) {
+    int originHP = vulnerable.healthPoint;
+    bool isEnemy = dynamic_cast<Enemy *>(&vulnerable) != nullptr;
+    bool alive = AttackUtils::attack(attackVal, vulnerable);
+    int descHP = 0;
+    if (alive) {
+        descHP = vulnerable.healthPoint;
     }
+    if (isEnemy) {
+        launcher.score += originHP - descHP;
+    }
+    return alive;
 }
+
+

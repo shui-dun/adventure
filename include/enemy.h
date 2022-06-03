@@ -20,11 +20,10 @@ class RandomWalkEnemy : public Enemy {
 public:
     RandomWalkEnemy(int xPos, int yPos);
 
-    bool move() override;
+    bool act() override;
 
-    bool beAttacked(Aggressive &attacker) override;
+    bool attack(Vulnerable &vulnerable) override;
 
-    bool shouldIMove() override;
 
 };
 
@@ -32,11 +31,9 @@ class AStarEnemy : public Enemy {
 public:
     AStarEnemy(int xPos, int yPos);
 
-    bool move() override;
+    bool act() override;
 
-    bool beAttacked(Aggressive &attacker) override;
-
-    bool shouldIMove() override;
+    bool attack(Vulnerable &vulnerable) override;
 
 };
 
