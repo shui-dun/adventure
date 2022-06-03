@@ -9,7 +9,7 @@
 #include "potion.h"
 #include "move.h"
 #include "mixin.h"
-#include "hero.h"
+#include "shooter.h"
 using namespace std;
 
 int main() {

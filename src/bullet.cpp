@@ -1,9 +1,9 @@
 #include "bullet.h"
 #include "mixin.h"
-#include "enemy.h"
+#include "boxer.h"
 
-Bullet::Bullet(int xPos, int yPos, int direction, int attackVal, Hero &launcher)
-        : Item(xPos, yPos, '*' | COLOR_PAIR(NORMAL_INIT)),
+Bullet::Bullet(int xPos, int yPos, int direction, int attackVal, Shooter &launcher, CampEnum camp)
+        : Item(xPos, yPos, '*' | COLOR_PAIR(NORMAL_INIT), camp),
           Vulnerable(1, 0, 0),
           Aggressive(attackVal),
           Movable(4, 3),
@@ -27,8 +27,9 @@ bool Bullet::act() {
 
 bool Bullet::attack(Vulnerable &vulnerable) {
     int originHP = vulnerable.healthPoint;
-    bool isEnemy = dynamic_cast<Enemy *>(&vulnerable) != nullptr;
-    bool alive = AttackUtils::attack(attackVal, vulnerable);
+    CampEnum oppositeCamp = dynamic_cast<Item &>(vulnerable).camp;
+    bool isEnemy = (oppositeCamp != camp && oppositeCamp != OBJECT);
+    bool alive = AttackUtils::attack(*this, vulnerable);
     int descHP = 0;
     if (alive) {
         descHP = vulnerable.healthPoint;

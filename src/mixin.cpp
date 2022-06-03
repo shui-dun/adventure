@@ -4,7 +4,7 @@ mt19937 randEngine;
 
 vector<vector<Item *>> globalMap;
 
-Hero *myHero;
+Shooter *myHero;
 
 bool gameOver;
 

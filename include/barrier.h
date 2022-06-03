@@ -7,7 +7,7 @@
 
 class Barrier : public Item {
 public:
-    Barrier(int xPos, int yPos, chtype symbol) : Item(xPos, yPos, symbol) {}
+    Barrier(int xPos, int yPos, chtype symbol, CampEnum camp) : Item(xPos, yPos, symbol, camp) {}
 };
 
 class SolidBarrier : public Barrier {

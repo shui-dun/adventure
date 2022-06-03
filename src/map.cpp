@@ -2,7 +2,7 @@
 #include "curses.h"
 #include "mixin.h"
 #include "barrier.h"
-#include "enemy.h"
+#include "boxer.h"
 #include "potion.h"
 #include <thread>
 
@@ -47,7 +47,7 @@ void MapUtils::genWall() {
         globalMap[i][0] = new SolidBarrier(i, 0);
         globalMap[i][lines - 1] = new SolidBarrier(i, lines - 1);
     }
-    myHero = new Hero(cols - 2, lines - 2);
+    myHero = new Shooter(cols - 2, lines - 2);
     globalMap[cols - 2][lines - 2] = myHero;
 }
 
@@ -96,13 +96,13 @@ void MapUtils::updateAxis(int x, int y, Item *item) {
 
 void MapUtils::createCharacters() {
     mapMutex.lock();
-    for (int i = 0; i < 25; ++i) {
+    for (int i = 0; i < 20; ++i) {
         createRandomCharacter();
     }
     refresh();
     mapMutex.unlock();
     while (true) {
-        this_thread::sleep_for(chrono::milliseconds(4000));
+        this_thread::sleep_for(chrono::milliseconds(6000));
         mapMutex.lock();
         if (gameOver) {
             mapMutex.unlock();
@@ -142,8 +142,8 @@ void MapUtils::createRandomCharacter() {
     Item *item = nullptr;
     uniform_real_distribution<float> distribution(0.0, 1.0);
     double randVal = distribution(randEngine);
-    if (randVal < 0.85) {
-        item = new RandomWalkEnemy(xPos, yPos);
+    if (randVal < 0.8) {
+        item = new RandomWalkBoxer(xPos, yPos);
     } else if (randVal < 0.9) {
         item = new CurePotion(xPos, yPos);
     } else if (randVal < 0.95) {

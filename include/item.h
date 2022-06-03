@@ -6,13 +6,24 @@
 class Item {
 public:
 
-    Item(int xPos, int yPos, chtype symbol) : xPos(xPos), yPos(yPos), symbol(symbol) {}
+    enum CampEnum {
+        OBJECT,
+        ENEMY,
+        PLAYER,
+        PLAYER2
+    };
+
+    Item(int xPos, int yPos, chtype symbol, CampEnum camp)
+            : xPos(xPos), yPos(yPos), symbol(symbol), camp(camp) {}
 
     virtual ~Item() = default;
 
-    int xPos{};
-    int yPos{};
-    chtype symbol{};
+    CampEnum camp;
+
+    int xPos;
+    int yPos;
+    chtype symbol;
+
 };
 
 #endif //ADVENTURE_ITEM_H

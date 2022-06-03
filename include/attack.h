@@ -34,6 +34,8 @@ public:
 class AttackUtils {
 public:
     static bool attack(int attackVal, Vulnerable &attacked);
+
+    static bool attack(Aggressive &attacker, Vulnerable &attacked);
 };
 
 

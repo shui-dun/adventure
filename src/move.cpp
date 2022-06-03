@@ -1,7 +1,7 @@
 #include "move.h"
 #include <thread>
 #include "mixin.h"
-#include "hero.h"
+#include "shooter.h"
 #include "map.h"
 
 
@@ -37,7 +37,7 @@ void MoveUtils::moveAllCharacters() {
                 auto movable = dynamic_cast<Movable *>(globalMap[i][j]);
                 if (movable == nullptr)
                     continue;
-                if (dynamic_cast<Hero *>(movable))
+                if (dynamic_cast<Shooter *>(movable))
                     continue;
                 if (!shouldMove(*movable))
                     continue;

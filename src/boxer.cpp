@@ -1,17 +1,17 @@
-#include "enemy.h"
+#include "boxer.h"
 #include "mixin.h"
 #include <random>
-#include "hero.h"
+#include "shooter.h"
 #include "map.h"
 #include "barrier.h"
 
 
-RandomWalkEnemy::RandomWalkEnemy(int xPos, int yPos)
-        : Enemy(xPos, yPos, '+' | COLOR_PAIR(NORMAL_INIT), 6, 1,
-                3, 60, randEngine() % 6,
-                '+' | COLOR_PAIR(NORMAL_INJURED)) {}
+RandomWalkBoxer::RandomWalkBoxer(int xPos, int yPos)
+        : Boxer(xPos, yPos, '+' | COLOR_PAIR(NORMAL_INIT), 6, 1,
+                3, 6, randEngine() % 6,
+                '+' | COLOR_PAIR(NORMAL_INJURED), ENEMY) {}
 
-bool RandomWalkEnemy::act() {
+bool RandomWalkBoxer::act() {
     uniform_int_distribution<int> distribution(0, 3);
     int direction = distribution(randEngine);
     auto p = MoveUtils::nextPosOfDirection(*this, direction);
@@ -41,30 +41,30 @@ bool RandomWalkEnemy::act() {
     }
 }
 
-bool RandomWalkEnemy::attack(Vulnerable &vulnerable) {
+bool RandomWalkBoxer::attack(Vulnerable &vulnerable) {
     if (dynamic_cast<Barrier *>(&vulnerable)) {
         return true;
     } else {
-        return AttackUtils::attack(attackVal, vulnerable);
+        return AttackUtils::attack(*this, vulnerable);
     }
 }
 
 
-AStarEnemy::AStarEnemy(int xPos, int yPos)
-        : Enemy(xPos, yPos, 'X' | COLOR_PAIR(NORMAL_INIT), 6, 1,
+AStarBoxer::AStarBoxer(int xPos, int yPos)
+        : Boxer(xPos, yPos, 'X' | COLOR_PAIR(NORMAL_INIT), 6, 1,
                 3, 7, randEngine() % timeUnits,
-                'X' | COLOR_PAIR(NORMAL_INJURED)) {}
+                'X' | COLOR_PAIR(NORMAL_INJURED), ENEMY) {}
 
-bool AStarEnemy::act() {
+bool AStarBoxer::act() {
     // A*搜索，尚待实现
     return true;
 }
 
-bool AStarEnemy::attack(Vulnerable &vulnerable) {
+bool AStarBoxer::attack(Vulnerable &vulnerable) {
     if (dynamic_cast<Barrier *>(&vulnerable)) {
         return true;
     } else {
-        return AttackUtils::attack(attackVal, vulnerable);
+        return AttackUtils::attack(*this, vulnerable);
     }
 }
 

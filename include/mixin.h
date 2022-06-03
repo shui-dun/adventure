@@ -5,12 +5,12 @@
 #include <vector>
 #include <mutex>
 #include "item.h"
-#include "hero.h"
+#include "shooter.h"
 using namespace std;
 
 extern mt19937 randEngine;
 
-enum colors {
+enum colorEnum {
     BACKGROUND = 1,
     INFO,
     INFO2,
@@ -25,7 +25,7 @@ enum colors {
 
 extern vector<vector<Item *>> globalMap;
 
-extern Hero *myHero;
+extern Shooter *myHero;
 
 extern bool gameOver;
 

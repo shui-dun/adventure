@@ -14,7 +14,7 @@ bool AttackUtils::attack(int attackVal, Vulnerable &attacked) {
         MapUtils::updateAxis(attackedItem.xPos, attackedItem.yPos, &attackedItem);
     }
     if (attacked.healthPoint <= 0) {
-        if (dynamic_cast<Hero *>(&attacked)) {
+        if (dynamic_cast<Shooter *>(&attacked)) {
             gameOver = true;
         }
         MapUtils::updateAxis(attackedItem.xPos, attackedItem.yPos, nullptr);
@@ -24,3 +24,12 @@ bool AttackUtils::attack(int attackVal, Vulnerable &attacked) {
         return true;
     }
 }
+
+bool AttackUtils::attack(Aggressive &attacker, Vulnerable &attacked) {
+    if (dynamic_cast<Item &>(attacker).camp == dynamic_cast<Item &>(attacked).camp) {
+        return true;
+    } else {
+        return attack(attacker.attackVal, attacked);
+    }
+}
+
