@@ -20,19 +20,7 @@ void MapUtils::init() {
     noecho();
     keypad(stdscr, TRUE);
     curs_set(0);
-    start_color();
-    init_pair(BACKGROUND, COLOR_WHITE, COLOR_WHITE);
-    init_pair(INFO, COLOR_WHITE, COLOR_BLACK);
-    init_pair(INFO2, COLOR_BLACK, COLOR_WHITE);
-    init_pair(SOLID_BARRIER, COLOR_BLACK, COLOR_BLACK);
-    init_pair(WEAK_BARRIER_INIT, COLOR_BLUE, COLOR_BLUE);
-    init_pair(WEAK_BARRIER_INJURED, COLOR_RED, COLOR_RED);
-    init_pair(NORMAL_INIT, COLOR_BLUE, COLOR_WHITE);
-    init_pair(NORMAL_INJURED, COLOR_RED, COLOR_WHITE);
-    init_pair(MIND_CONTROL, COLOR_WHITE, COLOR_CYAN);
-    init_pair(ME, COLOR_CYAN, COLOR_WHITE);
-    init_pair(POTION, COLOR_WHITE, COLOR_GREEN);
-    attron(COLOR_PAIR(INFO));
+    initColor();
     genWall();
     genRandomMap();
     drawInit();
@@ -168,7 +156,7 @@ void MapUtils::showGameOver() {
         mvprintw(lines / 2 - 3 + i, cols / 2 - 25, strs[i]);
     }
     attron(COLOR_PAIR(INFO));
-    mvprintw(lines - 1, 1, "Press Big Q to Continue...");
+    mvprintw(lines - 1, 1, "Press Big Q to Continue...                       ");
     refresh();
     while (getch() != 'Q') {
     }
@@ -188,4 +176,18 @@ void MapUtils::pause() {
 
 bool MapUtils::isAxisLegal(int xPos, int yPos) {
     return xPos >= 0 && xPos < cols && yPos >= 0 && yPos < lines;
+}
+
+void MapUtils::initColor() {
+    start_color();
+    init_pair(BACKGROUND, COLOR_WHITE, COLOR_WHITE);
+    init_pair(INFO, COLOR_WHITE, COLOR_BLACK);
+    init_pair(INFO2, COLOR_BLACK, COLOR_WHITE);
+    init_pair(SOLID_BARRIER, COLOR_BLACK, COLOR_BLACK);
+    init_pair(WEAK_BARRIER, COLOR_BLUE, COLOR_BLUE);
+    init_pair(NORMAL, COLOR_BLUE, COLOR_WHITE);
+    init_pair(MIND_CONTROL, COLOR_WHITE, COLOR_CYAN);
+    init_pair(ME, COLOR_CYAN, COLOR_WHITE);
+    init_pair(POTION, COLOR_WHITE, COLOR_GREEN);
+    attron(COLOR_PAIR(INFO));
 }

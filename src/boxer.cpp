@@ -7,8 +7,11 @@
 
 
 RandomWalkBoxer::RandomWalkBoxer(int xPos, int yPos)
-        : Boxer(xPos, yPos, '+', COLOR_PAIR(NORMAL_INIT), 6, 1,
-                3, 6, randEngine() % 6, ENEMY) {}
+        : Boxer(xPos, yPos, '+', COLOR_PAIR(MapUtils::NORMAL),
+                6 + AttackUtils::healthPointGainOfEnemies(),
+                1 + AttackUtils::defendValGainOfEnemies(),
+                3 + AttackUtils::attackValGainOfEnemies(),
+                8, randEngine() % 6, ENEMY) {}
 
 bool RandomWalkBoxer::act() {
     uniform_int_distribution<int> distribution(0, 3);
@@ -50,8 +53,11 @@ bool RandomWalkBoxer::attack(Vulnerable &vulnerable) {
 
 
 SmartBoxer::SmartBoxer(int xPos, int yPos)
-        : Boxer(xPos, yPos, '+', COLOR_PAIR(NORMAL_INIT), 6, 1,
-                3, 7, randEngine() % timeUnits,
+        : Boxer(xPos, yPos, '+', COLOR_PAIR(MapUtils::NORMAL),
+                6 + AttackUtils::healthPointGainOfEnemies(),
+                1 + AttackUtils::defendValGainOfEnemies(),
+                3 + AttackUtils::attackValGainOfEnemies(),
+                8, randEngine() % timeUnits,
                 ENEMY) {}
 
 bool SmartBoxer::act() {

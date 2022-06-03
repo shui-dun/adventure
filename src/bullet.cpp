@@ -4,7 +4,7 @@
 
 NormalBullet::NormalBullet(int xPos, int yPos, Shooter &launcher)
         : Bullet(xPos, yPos, '*', launcher.color, launcher.camp,
-                 4, 3, 1, 0,
+                 5, 3, 1, 0,
                  launcher.bulletAttackVal, launcher.direction) {}
 
 bool NormalBullet::act() {
@@ -21,10 +21,15 @@ bool HeroBullet::act() {
 
 HeroBullet::HeroBullet(int xPos, int yPos, HeroShooter &launcher)
         : Bullet(xPos, yPos, '*', launcher.color, launcher.camp,
-                 4, 3, 1, 0,
+                 5, 3, 1, 0,
                  launcher.bulletAttackVal, launcher.direction), launcher(launcher) {}
 
 bool HeroBullet::attack(Vulnerable &vulnerable) {
+    auto aggressive = dynamic_cast<Aggressive *>(&vulnerable);
+    mvprintw(MapUtils::lines - 1, 1,
+             "Attack: Enemy(ATK=%d,DEF=%d,HP=%d)                ",
+             aggressive == nullptr ? 0 : aggressive->attackVal,
+             vulnerable.defendVal, vulnerable.healthPoint);
     int originHP = vulnerable.healthPoint;
     CampEnum oppositeCamp = dynamic_cast<Item &>(vulnerable).camp;
     bool isEnemy = (oppositeCamp != camp && oppositeCamp != OBJECT);

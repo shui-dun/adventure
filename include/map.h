@@ -9,11 +9,25 @@ class MapUtils {
 
 public:
 
+    enum colorEnum {
+        BACKGROUND = 1,
+        INFO,
+        INFO2,
+        SOLID_BARRIER,
+        WEAK_BARRIER,
+        NORMAL,
+        MIND_CONTROL,
+        ME,
+        POTION
+    };
+
     static int lines;
 
     static int cols;
 
     static void init();
+
+    static void initColor();
 
     static void genWall();
 

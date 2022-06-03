@@ -10,19 +10,6 @@ using namespace std;
 
 extern mt19937 randEngine;
 
-enum colorEnum {
-    BACKGROUND = 1,
-    INFO,
-    INFO2,
-    SOLID_BARRIER,
-    WEAK_BARRIER_INIT,
-    WEAK_BARRIER_INJURED,
-    NORMAL_INIT,
-    NORMAL_INJURED,
-    MIND_CONTROL,
-    ME,
-    POTION
-};
 
 extern vector<vector<Item *>> globalMap;
 

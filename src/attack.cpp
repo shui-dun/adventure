@@ -29,3 +29,15 @@ bool AttackUtils::attack(Aggressive &attacker, Vulnerable &attacked) {
     }
 }
 
+int AttackUtils::attackValGainOfEnemies() {
+    return myHero->score / 30;
+}
+
+int AttackUtils::defendValGainOfEnemies() {
+    return myHero->score / 50;
+}
+
+int AttackUtils::healthPointGainOfEnemies() {
+    return myHero->score / 30;
+}
+
