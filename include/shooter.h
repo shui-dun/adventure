@@ -41,7 +41,18 @@ public:
     bool act() override;
 };
 
-class HeroUtils {
+class RandomWalkShooter : public Shooter {
+public:
+    RandomWalkShooter(int xPos, int yPos);
+
+    bool act() override;
+};
+
+class SmartShooter : public Shooter {
+
+};
+
+class ShooterUtils {
 
 };
 

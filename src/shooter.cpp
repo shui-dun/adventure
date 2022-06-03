@@ -66,8 +66,9 @@ bool HeroShooter::act() {
             MapUtils::updateAxis(bulletX, bulletY, bullet);
             return true;
         } else {
-            if (dynamic_cast<Vulnerable *>(globalMap[bulletX][bulletY])) {
-                bullet->attack(dynamic_cast<Vulnerable &>(*globalMap[bulletX][bulletY]));
+            auto vulnerable = dynamic_cast<Vulnerable *>(globalMap[bulletX][bulletY]);
+            if (vulnerable) {
+                bullet->attack(*vulnerable);
             }
             delete bullet;
             return true;
@@ -86,3 +87,48 @@ bool HeroShooter::act() {
 }
 
 
+RandomWalkShooter::RandomWalkShooter(int xPos, int yPos)
+        : Shooter(xPos, yPos,
+                  'X' | COLOR_PAIR(NORMAL_INIT),
+                  6,
+                  1,
+                  6,
+                  randEngine() % 6,
+                  'X' | COLOR_PAIR(NORMAL_INJURED),
+                  ENEMY,
+                  3,
+                  0) {}
+
+bool RandomWalkShooter::act() {
+    direction = uniform_int_distribution<int>(0, 3)(randEngine);
+    auto p = MoveUtils::nextPosOfDirection(*this, direction);
+    double choice = uniform_real_distribution<double>(0, 1)(randEngine);
+    int newX = p.first, newY = p.second;
+    if (choice < 0.5) {
+        Item *item = globalMap[newX][newY];
+        if (item == nullptr) {
+            MoveUtils::moveToPos(*this, newX, newY);
+            return true;
+        } else {
+            auto aggressive = dynamic_cast<Aggressive *>(item);
+            if (aggressive) {
+                return aggressive->attack(*this);
+            } else {
+                return true;
+            }
+        }
+    } else {
+        auto bullet = new NormalBullet(newX, newY, direction, bulletAttackVal, this->camp);
+        if (globalMap[newX][newY] == nullptr) {
+            MapUtils::updateAxis(newX, newY, bullet);
+            return true;
+        } else {
+            auto vulnerable = dynamic_cast<Vulnerable *>(globalMap[newX][newY]);
+            if (vulnerable) {
+                bullet->attack(*vulnerable);
+            }
+            delete bullet;
+            return true;
+        }
+    }
+}

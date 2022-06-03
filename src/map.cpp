@@ -142,8 +142,10 @@ void MapUtils::createRandomCharacter() {
     Item *item = nullptr;
     uniform_real_distribution<float> distribution(0.0, 1.0);
     double randVal = distribution(randEngine);
-    if (randVal < 0.8) {
+    if (randVal < 0.4) {
         item = new RandomWalkBoxer(xPos, yPos);
+    } else if (randVal < 0.8) {
+        item = new RandomWalkShooter(xPos, yPos);
     } else if (randVal < 0.9) {
         item = new CurePotion(xPos, yPos);
     } else if (randVal < 0.95) {

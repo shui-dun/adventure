@@ -28,9 +28,9 @@ public:
 
 };
 
-class AStarBoxer : public Boxer {
+class SmartBoxer : public Boxer {
 public:
-    AStarBoxer(int xPos, int yPos);
+    SmartBoxer(int xPos, int yPos);
 
     bool act() override;
 

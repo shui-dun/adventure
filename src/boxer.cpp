@@ -50,17 +50,17 @@ bool RandomWalkBoxer::attack(Vulnerable &vulnerable) {
 }
 
 
-AStarBoxer::AStarBoxer(int xPos, int yPos)
-        : Boxer(xPos, yPos, 'X' | COLOR_PAIR(NORMAL_INIT), 6, 1,
+SmartBoxer::SmartBoxer(int xPos, int yPos)
+        : Boxer(xPos, yPos, '+' | COLOR_PAIR(NORMAL_INIT), 6, 1,
                 3, 7, randEngine() % timeUnits,
-                'X' | COLOR_PAIR(NORMAL_INJURED), ENEMY) {}
+                '+' | COLOR_PAIR(NORMAL_INJURED), ENEMY) {}
 
-bool AStarBoxer::act() {
+bool SmartBoxer::act() {
     // A*搜索，尚待实现
     return true;
 }
 
-bool AStarBoxer::attack(Vulnerable &vulnerable) {
+bool SmartBoxer::attack(Vulnerable &vulnerable) {
     if (dynamic_cast<Barrier *>(&vulnerable)) {
         return true;
     } else {
