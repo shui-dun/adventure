@@ -24,7 +24,7 @@ public:
 
 class NormalBullet : public Bullet {
 public:
-    NormalBullet(int xPos, int yPos, int direction, int attackVal, CampEnum camp);
+    NormalBullet(int xPos, int yPos, Shooter &launcher);
 
     bool act() override;
 
@@ -34,7 +34,7 @@ public:
 
 class HeroBullet : public Bullet {
 public:
-    HeroBullet(int xPos, int yPos, int direction, int attackVal, CampEnum camp, HeroShooter &launcher);
+    HeroBullet(int xPos, int yPos, HeroShooter &launcher);
 
     HeroShooter &launcher;
 

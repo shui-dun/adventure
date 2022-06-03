@@ -62,7 +62,7 @@ bool HeroShooter::act() {
     } else if (inputChar == ' ') {
         auto p = MoveUtils::nextPosOfDirection(*this, direction);
         int bulletX = p.first, bulletY = p.second;
-        auto bullet = new HeroBullet(bulletX, bulletY, direction, bulletAttackVal, this->camp, *this);
+        auto bullet = new HeroBullet(bulletX, bulletY, *this);
         if (globalMap[bulletX][bulletY] == nullptr) {
             MapUtils::updateAxis(bulletX, bulletY, bullet);
             return true;
@@ -145,7 +145,7 @@ bool RandomWalkShooter::act() {
             }
         }
     } else {
-        auto bullet = new NormalBullet(newX, newY, direction, bulletAttackVal, this->camp);
+        auto bullet = new NormalBullet(newX, newY, *this);
         if (globalMap[newX][newY] == nullptr) {
             MapUtils::updateAxis(newX, newY, bullet);
             return true;

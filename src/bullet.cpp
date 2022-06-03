@@ -2,10 +2,10 @@
 #include "mixin.h"
 #include "boxer.h"
 
-NormalBullet::NormalBullet(int xPos, int yPos, int direction, int attackVal, Item::CampEnum camp)
-        : Bullet(xPos, yPos, '*', COLOR_PAIR(NORMAL_INIT), camp,
+NormalBullet::NormalBullet(int xPos, int yPos, Shooter &launcher)
+        : Bullet(xPos, yPos, '*', launcher.color, launcher.camp,
                  4, 3, 1, 0,
-                 attackVal, direction) {}
+                 launcher.bulletAttackVal, launcher.direction) {}
 
 bool NormalBullet::act() {
     return BulletUtils::defaultAction(*this);
@@ -19,12 +19,10 @@ bool HeroBullet::act() {
     return BulletUtils::defaultAction(*this);
 }
 
-HeroBullet::HeroBullet(int xPos, int yPos, int direction,
-                       int attackVal, Item::CampEnum camp,
-                       HeroShooter &launcher)
-        : Bullet(xPos, yPos, '*', COLOR_PAIR(NORMAL_INIT), camp,
+HeroBullet::HeroBullet(int xPos, int yPos, HeroShooter &launcher)
+        : Bullet(xPos, yPos, '*', launcher.color, launcher.camp,
                  4, 3, 1, 0,
-                 attackVal, direction), launcher(launcher) {}
+                 launcher.bulletAttackVal, launcher.direction), launcher(launcher) {}
 
 bool HeroBullet::attack(Vulnerable &vulnerable) {
     int originHP = vulnerable.healthPoint;
