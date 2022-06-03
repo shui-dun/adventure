@@ -29,6 +29,7 @@ void MapUtils::init() {
     init_pair(WEAK_BARRIER_INJURED, COLOR_RED, COLOR_RED);
     init_pair(NORMAL_INIT, COLOR_BLUE, COLOR_WHITE);
     init_pair(NORMAL_INJURED, COLOR_RED, COLOR_WHITE);
+    init_pair(MIND_CONTROL, COLOR_WHITE, COLOR_CYAN);
     init_pair(ME, COLOR_CYAN, COLOR_WHITE);
     init_pair(POTION, COLOR_WHITE, COLOR_GREEN);
     attron(COLOR_PAIR(INFO));
@@ -78,7 +79,7 @@ void MapUtils::drawInit() {
             if (globalMap[i][j] == nullptr) {
                 addch(' ' | COLOR_PAIR(BACKGROUND));
             } else {
-                addch(globalMap[i][j]->symbol);
+                addch(globalMap[i][j]->symbol | globalMap[i][j]->color);
             }
         }
     }
@@ -88,7 +89,7 @@ void MapUtils::drawInit() {
 void MapUtils::updateAxis(int x, int y, Item *item) {
     globalMap[x][y] = item;
     if (item) {
-        mvaddch(y, x, item->symbol);
+        mvaddch(y, x, item->symbol | item->color);
     } else {
         mvaddch(y, x, ' ' | COLOR_PAIR(BACKGROUND));
     }
@@ -183,4 +184,8 @@ void MapUtils::pause() {
     mvprintw(MapUtils::lines - 1, 1,
              "                                                               ");
     refresh();
+}
+
+bool MapUtils::isAxisLegal(int xPos, int yPos) {
+    return xPos >= 0 && xPos < cols && yPos >= 0 && yPos < lines;
 }

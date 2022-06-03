@@ -3,8 +3,8 @@
 #include "boxer.h"
 
 NormalBullet::NormalBullet(int xPos, int yPos, int direction, int attackVal, Item::CampEnum camp)
-        : Bullet(xPos, yPos, '*' | COLOR_PAIR(NORMAL_INIT), camp,
-                 4, 3, 1, 0, 0,
+        : Bullet(xPos, yPos, '*', COLOR_PAIR(NORMAL_INIT), camp,
+                 4, 3, 1, 0,
                  attackVal, direction) {}
 
 bool NormalBullet::act() {
@@ -22,8 +22,8 @@ bool HeroBullet::act() {
 HeroBullet::HeroBullet(int xPos, int yPos, int direction,
                        int attackVal, Item::CampEnum camp,
                        HeroShooter &launcher)
-        : Bullet(xPos, yPos, '*' | COLOR_PAIR(NORMAL_INIT), camp,
-                 4, 3, 1, 0, 0,
+        : Bullet(xPos, yPos, '*', COLOR_PAIR(NORMAL_INIT), camp,
+                 4, 3, 1, 0,
                  attackVal, direction), launcher(launcher) {}
 
 bool HeroBullet::attack(Vulnerable &vulnerable) {

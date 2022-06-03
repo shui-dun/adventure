@@ -4,6 +4,7 @@
 #include "potion.h"
 #include <thread>
 #include <map>
+#include <curses.h>
 
 map<chtype, int> HeroShooter::directMap = {{'w', 0},
                                            {'s', 1},
@@ -12,8 +13,8 @@ map<chtype, int> HeroShooter::directMap = {{'w', 0},
 
 
 HeroShooter::HeroShooter(int xPos, int yPos)
-        : Shooter(xPos, yPos, 'A' | COLOR_PAIR(ME), 20, 1,
-                  1, 1, 0, PLAYER, 3, 0),
+        : Shooter(xPos, yPos, 'A', COLOR_PAIR(ME), 20, 1,
+                  1, 1, PLAYER, 3, 0),
           score(0) {}
 
 void HeroShooter::updateSymbol() {
@@ -81,20 +82,52 @@ bool HeroShooter::act() {
     } else if (inputChar == 'p') {
         MapUtils::pause();
         return true;
+    } else if (inputChar == 'c') {
+        mindControl();
+        return true;
     } else {
         return true;
     }
 }
 
+Item *HeroShooter::findNearestEnemy() {
+    int newX = xPos, newY = yPos;
+    while (true) {
+        if (direction == 0) {
+            newY -= 1;
+        } else if (direction == 1) {
+            newY += 1;
+        } else if (direction == 2) {
+            newX -= 1;
+        } else {
+            newX += 1;
+        }
+        if (!MapUtils::isAxisLegal(newX, newY))
+            return nullptr;
+        auto item = globalMap[newX][newY];
+        if (item == nullptr)
+            continue;
+        if (item->camp != camp && item->camp != OBJECT)
+            return item;
+    }
+}
+
+void HeroShooter::mindControl() {
+    auto nearestEnemy = findNearestEnemy();
+    if (nearestEnemy == nullptr)
+        return;
+    nearestEnemy->camp = camp;
+    nearestEnemy->color = COLOR_PAIR(MIND_CONTROL);
+}
+
 
 RandomWalkShooter::RandomWalkShooter(int xPos, int yPos)
         : Shooter(xPos, yPos,
-                  'X' | COLOR_PAIR(NORMAL_INIT),
+                  'X', COLOR_PAIR(NORMAL_INIT),
                   6,
                   1,
                   6,
                   randEngine() % 6,
-                  'X' | COLOR_PAIR(NORMAL_INJURED),
                   ENEMY,
                   3,
                   0) {}

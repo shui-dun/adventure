@@ -14,12 +14,12 @@ public:
 
     int direction;
 
-    Shooter(int xPos, int yPos, chtype symbol, int healthPoint, int defendVal,
+    Shooter(int xPos, int yPos, chtype symbol, chtype color, int healthPoint, int defendVal,
             unsigned int timeUnits, unsigned int curTimeUnit,
-            chtype injuredSymbol, CampEnum camp,
+            CampEnum camp,
             int bulletAttackVal, int direction) :
-            Item(xPos, yPos, symbol, camp),
-            Vulnerable(healthPoint, defendVal, injuredSymbol),
+            Item(xPos, yPos, symbol, color, camp),
+            Vulnerable(healthPoint, defendVal),
             Movable(timeUnits, curTimeUnit),
             bulletAttackVal(bulletAttackVal), direction(direction) {}
 };
@@ -30,6 +30,10 @@ private:
     void updateSymbol();
 
     static map<chtype, int> directMap;
+
+    Item *findNearestEnemy();
+
+    void mindControl();
 
 public:
     chtype inputChar;

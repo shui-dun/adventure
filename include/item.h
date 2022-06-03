@@ -13,8 +13,8 @@ public:
         PLAYER2
     };
 
-    Item(int xPos, int yPos, chtype symbol, CampEnum camp)
-            : xPos(xPos), yPos(yPos), symbol(symbol), camp(camp) {}
+    Item(int xPos, int yPos, chtype symbol, chtype color, CampEnum camp)
+            : xPos(xPos), yPos(yPos), symbol(symbol), color(color), camp(camp) {}
 
     virtual ~Item() = default;
 
@@ -23,6 +23,7 @@ public:
     int xPos;
     int yPos;
     chtype symbol;
+    chtype color;
 
 };
 

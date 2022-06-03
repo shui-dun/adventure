@@ -19,6 +19,7 @@ enum colorEnum {
     WEAK_BARRIER_INJURED,
     NORMAL_INIT,
     NORMAL_INJURED,
+    MIND_CONTROL,
     ME,
     POTION
 };

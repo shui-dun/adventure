@@ -5,9 +5,9 @@
 
 class Vulnerable {
 public:
-    Vulnerable(int healthPoint, int defendVal, chtype injuredSymbol)
+    Vulnerable(int healthPoint, int defendVal)
             : healthPoint(healthPoint), defendVal(defendVal),
-              initHealthPoint(healthPoint), injuredSymbol(injuredSymbol) {}
+              initHealthPoint(healthPoint) {}
 
     virtual ~Vulnerable() = default;
 
@@ -16,8 +16,6 @@ public:
     int initHealthPoint;
 
     int defendVal;
-
-    chtype injuredSymbol;
 };
 
 class Aggressive {

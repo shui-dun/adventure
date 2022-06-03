@@ -7,11 +7,11 @@
 
 class Boxer : public Item, public Movable, public Vulnerable, public Aggressive {
 public:
-    Boxer(int xPos, int yPos, chtype symbol, int healthPoint, int defendVal,
+    Boxer(int xPos, int yPos, chtype symbol, chtype color, int healthPoint, int defendVal,
           int attackVal, unsigned int timeUnits, unsigned int curTimeUnit,
-          chtype injuredSymbol, CampEnum camp) :
-            Item(xPos, yPos, symbol, camp),
-            Vulnerable(healthPoint, defendVal, injuredSymbol),
+          CampEnum camp) :
+            Item(xPos, yPos, symbol, color, camp),
+            Vulnerable(healthPoint, defendVal),
             Aggressive(attackVal),
             Movable(timeUnits, curTimeUnit) {}
 };

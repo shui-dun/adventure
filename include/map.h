@@ -30,6 +30,8 @@ public:
     static void pause();
 
     static void showGameOver();
+
+    static bool isAxisLegal(int xPos, int yPos);
 };
 
 

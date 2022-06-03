@@ -7,9 +7,8 @@
 
 
 RandomWalkBoxer::RandomWalkBoxer(int xPos, int yPos)
-        : Boxer(xPos, yPos, '+' | COLOR_PAIR(NORMAL_INIT), 6, 1,
-                3, 60, randEngine() % 6,
-                '+' | COLOR_PAIR(NORMAL_INJURED), ENEMY) {}
+        : Boxer(xPos, yPos, '+', COLOR_PAIR(NORMAL_INIT), 6, 1,
+                3, 6, randEngine() % 6, ENEMY) {}
 
 bool RandomWalkBoxer::act() {
     uniform_int_distribution<int> distribution(0, 3);
@@ -51,9 +50,9 @@ bool RandomWalkBoxer::attack(Vulnerable &vulnerable) {
 
 
 SmartBoxer::SmartBoxer(int xPos, int yPos)
-        : Boxer(xPos, yPos, '+' | COLOR_PAIR(NORMAL_INIT), 6, 1,
+        : Boxer(xPos, yPos, '+', COLOR_PAIR(NORMAL_INIT), 6, 1,
                 3, 7, randEngine() % timeUnits,
-                '+' | COLOR_PAIR(NORMAL_INJURED), ENEMY) {}
+                ENEMY) {}
 
 bool SmartBoxer::act() {
     // A*搜索，尚待实现

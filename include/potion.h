@@ -6,7 +6,7 @@
 
 class Potion : public Item {
 public:
-    Potion(int xPos, int yPos, chtype symbol, CampEnum camp) : Item(xPos, yPos, symbol, camp) {}
+    Potion(int xPos, int yPos, chtype symbol, chtype color, CampEnum camp) : Item(xPos, yPos, symbol, color, camp) {}
 
     virtual void actOn(HeroShooter &hero) = 0;
 };

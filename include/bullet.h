@@ -9,11 +9,12 @@
 
 class Bullet : public Item, public Movable, public Vulnerable, public Aggressive {
 public:
-    Bullet(int xPos, int yPos, chtype symbol, CampEnum camp, unsigned int timeUnits, unsigned int curTimeUnit,
-           int healthPoint, int defendVal, chtype injuredSymbol, int attackVal, int direction)
-            : Item(xPos, yPos, symbol, camp),
+    Bullet(int xPos, int yPos, chtype symbol, chtype color, CampEnum camp, unsigned int timeUnits,
+           unsigned int curTimeUnit,
+           int healthPoint, int defendVal, int attackVal, int direction)
+            : Item(xPos, yPos, symbol, color, camp),
               Movable(timeUnits, curTimeUnit),
-              Vulnerable(healthPoint, defendVal, injuredSymbol),
+              Vulnerable(healthPoint, defendVal),
               Aggressive(attackVal),
               direction(direction) {}
 
