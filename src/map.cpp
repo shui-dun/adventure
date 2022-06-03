@@ -47,7 +47,7 @@ void MapUtils::genWall() {
         globalMap[i][0] = new SolidBarrier(i, 0);
         globalMap[i][lines - 1] = new SolidBarrier(i, lines - 1);
     }
-    myHero = new Shooter(cols - 2, lines - 2);
+    myHero = new HeroShooter(cols - 2, lines - 2);
     globalMap[cols - 2][lines - 2] = myHero;
 }
 

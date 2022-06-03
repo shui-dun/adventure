@@ -8,7 +8,7 @@ class Potion : public Item {
 public:
     Potion(int xPos, int yPos, chtype symbol, CampEnum camp) : Item(xPos, yPos, symbol, camp) {}
 
-    virtual void actOn(Shooter &hero) = 0;
+    virtual void actOn(HeroShooter &hero) = 0;
 };
 
 class CurePotion : public Potion {
@@ -16,7 +16,7 @@ class CurePotion : public Potion {
 public:
     CurePotion(int xPos, int yPos);
 
-    void actOn(Shooter &hero) override;
+    void actOn(HeroShooter &hero) override;
 };
 
 class StrengthenPotion : public Potion {
@@ -24,7 +24,7 @@ class StrengthenPotion : public Potion {
 public:
     StrengthenPotion(int xPos, int yPos);
 
-    void actOn(Shooter &hero) override;
+    void actOn(HeroShooter &hero) override;
 };
 
 class DefendPotion : public Potion {
@@ -32,7 +32,7 @@ class DefendPotion : public Potion {
 public:
     DefendPotion(int xPos, int yPos);
 
-    void actOn(Shooter &hero) override;
+    void actOn(HeroShooter &hero) override;
 };
 
 #endif //ADVENTURE_POTION_H

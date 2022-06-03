@@ -37,11 +37,15 @@ void MoveUtils::moveAllCharacters() {
                 auto movable = dynamic_cast<Movable *>(globalMap[i][j]);
                 if (movable == nullptr)
                     continue;
-                if (dynamic_cast<Shooter *>(movable))
+                if (dynamic_cast<HeroShooter *>(movable))
                     continue;
                 if (!shouldMove(*movable))
                     continue;
                 movable->act();
+                if (gameOver) {
+                    mapMutex.unlock();
+                    return;
+                }
             }
         }
         refresh();

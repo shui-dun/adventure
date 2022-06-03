@@ -5,18 +5,18 @@
 #include <thread>
 #include <map>
 
-map<chtype, int> Shooter::directMap = {{'w', 0},
-                                       {'s', 1},
-                                       {'a', 2},
-                                       {'d', 3}};
+map<chtype, int> HeroShooter::directMap = {{'w', 0},
+                                           {'s', 1},
+                                           {'a', 2},
+                                           {'d', 3}};
 
-Shooter::Shooter(int xPos, int yPos)
-        : Item(xPos, yPos, 'A' | COLOR_PAIR(ME), PLAYER),
-          Vulnerable(20, 1, 0),
-          Movable(2, 1),
-          bulletAttackVal(3), direction(0), score(0) {}
 
-void Shooter::updateSymbol() {
+HeroShooter::HeroShooter(int xPos, int yPos)
+        : Shooter(xPos, yPos, 'A' | COLOR_PAIR(ME), 20, 1,
+                  1, 1, 0, PLAYER, 3, 0),
+          score(0) {}
+
+void HeroShooter::updateSymbol() {
     if (direction == 0) {
         symbol = 'A' | COLOR_PAIR(ME);
     } else if (direction == 1) {
@@ -28,7 +28,7 @@ void Shooter::updateSymbol() {
     }
 }
 
-bool Shooter::act() {
+bool HeroShooter::act() {
     int newX, newY;
     if (directMap.find(inputChar) != directMap.end()) {
         if (direction == directMap[inputChar]) {
@@ -61,7 +61,7 @@ bool Shooter::act() {
     } else if (inputChar == ' ') {
         auto p = MoveUtils::nextPosOfDirection(*this, direction);
         int bulletX = p.first, bulletY = p.second;
-        auto bullet = new Bullet(bulletX, bulletY, direction, bulletAttackVal, *this, this->camp);
+        auto bullet = new HeroBullet(bulletX, bulletY, direction, bulletAttackVal, this->camp, *this);
         if (globalMap[bulletX][bulletY] == nullptr) {
             MapUtils::updateAxis(bulletX, bulletY, bullet);
             return true;

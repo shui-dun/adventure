@@ -14,7 +14,7 @@ bool AttackUtils::attack(int attackVal, Vulnerable &attacked) {
         MapUtils::updateAxis(attackedItem.xPos, attackedItem.yPos, &attackedItem);
     }
     if (attacked.healthPoint <= 0) {
-        if (dynamic_cast<Shooter *>(&attacked)) {
+        if (dynamic_cast<HeroShooter *>(&attacked)) {
             gameOver = true;
         }
         MapUtils::updateAxis(attackedItem.xPos, attackedItem.yPos, nullptr);

@@ -2,30 +2,31 @@
 #include "mixin.h"
 #include "boxer.h"
 
-Bullet::Bullet(int xPos, int yPos, int direction, int attackVal, Shooter &launcher, CampEnum camp)
-        : Item(xPos, yPos, '*' | COLOR_PAIR(NORMAL_INIT), camp),
-          Vulnerable(1, 0, 0),
-          Aggressive(attackVal),
-          Movable(4, 3),
-          direction(direction),
-          launcher(launcher) {}
+NormalBullet::NormalBullet(int xPos, int yPos, int direction, int attackVal, Item::CampEnum camp)
+        : Bullet(xPos, yPos, '*' | COLOR_PAIR(NORMAL_INIT), camp,
+                 4, 3, 1, 0, 0,
+                 attackVal, direction) {}
 
-bool Bullet::act() {
-    auto p = MoveUtils::nextPosOfDirection(*this, direction);
-    int newX = p.first, newY = p.second;
-    if (globalMap[newX][newY] == nullptr) {
-        MoveUtils::moveToPos(*this, newX, newY);
-        return true;
-    } else {
-        if (dynamic_cast<Vulnerable *>(globalMap[newX][newY])) {
-            attack(*dynamic_cast<Vulnerable *>(globalMap[newX][newY]));
-        }
-        AttackUtils::attack(1, *this);
-        return false;
-    }
+bool NormalBullet::act() {
+    return BulletUtils::defaultAction(*this);
 }
 
-bool Bullet::attack(Vulnerable &vulnerable) {
+bool NormalBullet::attack(Vulnerable &vulnerable) {
+    return AttackUtils::attack(*this, vulnerable);
+}
+
+bool HeroBullet::act() {
+    return BulletUtils::defaultAction(*this);
+}
+
+HeroBullet::HeroBullet(int xPos, int yPos, int direction,
+                       int attackVal, Item::CampEnum camp,
+                       HeroShooter &launcher)
+        : Bullet(xPos, yPos, '*' | COLOR_PAIR(NORMAL_INIT), camp,
+                 4, 3, 1, 0, 0,
+                 attackVal, direction), launcher(launcher) {}
+
+bool HeroBullet::attack(Vulnerable &vulnerable) {
     int originHP = vulnerable.healthPoint;
     CampEnum oppositeCamp = dynamic_cast<Item &>(vulnerable).camp;
     bool isEnemy = (oppositeCamp != camp && oppositeCamp != OBJECT);
@@ -40,4 +41,18 @@ bool Bullet::attack(Vulnerable &vulnerable) {
     return alive;
 }
 
-
+bool BulletUtils::defaultAction(Bullet &bullet) {
+    auto p = MoveUtils::nextPosOfDirection(bullet, bullet.direction);
+    int newX = p.first, newY = p.second;
+    if (globalMap[newX][newY] == nullptr) {
+        MoveUtils::moveToPos(bullet, newX, newY);
+        return true;
+    } else {
+        auto vulnerable = dynamic_cast<Vulnerable *>(globalMap[newX][newY]);
+        if (vulnerable) {
+            bullet.attack(*vulnerable);
+        }
+        AttackUtils::attack(1, bullet);
+        return false;
+    }
+}

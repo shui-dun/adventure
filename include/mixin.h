@@ -25,7 +25,7 @@ enum colorEnum {
 
 extern vector<vector<Item *>> globalMap;
 
-extern Shooter *myHero;
+extern HeroShooter *myHero;
 
 extern bool gameOver;
 

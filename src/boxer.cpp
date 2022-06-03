@@ -8,7 +8,7 @@
 
 RandomWalkBoxer::RandomWalkBoxer(int xPos, int yPos)
         : Boxer(xPos, yPos, '+' | COLOR_PAIR(NORMAL_INIT), 6, 1,
-                3, 6, randEngine() % 6,
+                3, 60, randEngine() % 6,
                 '+' | COLOR_PAIR(NORMAL_INJURED), ENEMY) {}
 
 bool RandomWalkBoxer::act() {
