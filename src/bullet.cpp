@@ -4,7 +4,7 @@
 
 Bullet::Bullet(int xPos, int yPos, int direction, int attackVal, Hero &launcher)
         : Item(xPos, yPos, '*' | COLOR_PAIR(NORMAL_INIT)),
-          Vulnerable(1, 0),
+          Vulnerable(1, 0, 0),
           Aggressive(attackVal),
           Movable(4, 3),
           direction(direction),

@@ -8,9 +8,9 @@
 class Enemy : public Item, public Movable, public Vulnerable, public Aggressive {
 public:
     Enemy(int xPos, int yPos, chtype symbol, int healthPoint, int defendVal,
-          int attackVal, unsigned int timeUnits, unsigned int curTimeUnit) :
+          int attackVal, unsigned int timeUnits, unsigned int curTimeUnit, chtype injuredSymbol) :
             Item(xPos, yPos, symbol),
-            Vulnerable(healthPoint, defendVal),
+            Vulnerable(healthPoint, defendVal, injuredSymbol),
             Aggressive(attackVal),
             Movable(timeUnits, curTimeUnit) {}
 };

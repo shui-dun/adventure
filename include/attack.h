@@ -5,7 +5,7 @@
 
 class Aggressive {
 public:
-    Aggressive(int attackVal): attackVal(attackVal){}
+    Aggressive(int attackVal) : attackVal(attackVal) {}
 
     virtual ~Aggressive() = default;
 
@@ -14,7 +14,9 @@ public:
 
 class Vulnerable {
 public:
-    Vulnerable(int healthPoint, int defendVal) : healthPoint(healthPoint), defendVal(defendVal) {}
+    Vulnerable(int healthPoint, int defendVal, chtype injuredSymbol)
+            : healthPoint(healthPoint), defendVal(defendVal),
+              initHealthPoint(healthPoint), injuredSymbol(injuredSymbol) {}
 
     virtual ~Vulnerable() = default;
 
@@ -23,12 +25,16 @@ public:
 
     int healthPoint;
 
+    int initHealthPoint;
+
     int defendVal;
+
+    chtype injuredSymbol;
 };
 
 class AttackUtils {
 public:
-    static bool attack(Aggressive &attacker, Vulnerable &attacked, unsigned int ch);
+    static bool attack(Aggressive &attacker, Vulnerable &attacked);
 };
 
 

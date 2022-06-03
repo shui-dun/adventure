@@ -10,6 +10,12 @@ map<chtype, int> Hero::directMap = {{'w', 0},
                                     {'a', 2},
                                     {'d', 3}};
 
+Hero::Hero(int xPos, int yPos)
+        : Item(xPos, yPos, 'A' | COLOR_PAIR(ME)),
+          Vulnerable(20, 1, 0),
+          Movable(2, 1),
+          bulletAttackVal(3), direction(0), score(0) {}
+
 void Hero::updateSymbol() {
     if (direction == 0) {
         symbol = 'A' | COLOR_PAIR(ME);
@@ -21,13 +27,6 @@ void Hero::updateSymbol() {
         symbol = '>' | COLOR_PAIR(ME);
     }
 }
-
-
-Hero::Hero(int xPos, int yPos)
-        : Item(xPos, yPos, 'A' | COLOR_PAIR(ME)),
-          Vulnerable(20, 1),
-          Movable(2, 1),
-          bulletAttackVal(3), direction(0), score(0) {}
 
 bool Hero::move() {
     int newX, newY;
@@ -109,7 +108,7 @@ bool Hero::move() {
 }
 
 bool Hero::beAttacked(Aggressive &attacker) {
-    bool alive = AttackUtils::attack(attacker, *this, this->symbol);
+    bool alive = AttackUtils::attack(attacker, *this);
     if (!alive) {
         gameOver = true;
         return false;

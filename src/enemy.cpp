@@ -7,7 +7,8 @@
 
 RandomWalkEnemy::RandomWalkEnemy(int xPos, int yPos)
         : Enemy(xPos, yPos, '+' | COLOR_PAIR(NORMAL_INIT), 6, 1,
-                3, 6, randEngine() % 6) {}
+                3, 6, randEngine() % 6,
+                '+' | COLOR_PAIR(NORMAL_INJURED)) {}
 
 bool RandomWalkEnemy::move() {
     uniform_int_distribution<int> distribution(0, 3);
@@ -46,7 +47,7 @@ bool RandomWalkEnemy::move() {
 }
 
 bool RandomWalkEnemy::beAttacked(Aggressive &attacker) {
-    return AttackUtils::attack(attacker, *this, '+' | COLOR_PAIR(NORMAL_INJURED));
+    return AttackUtils::attack(attacker, *this);
 }
 
 bool RandomWalkEnemy::shouldIMove() {
@@ -55,7 +56,8 @@ bool RandomWalkEnemy::shouldIMove() {
 
 AStarEnemy::AStarEnemy(int xPos, int yPos)
         : Enemy(xPos, yPos, 'X' | COLOR_PAIR(NORMAL_INIT), 6, 1,
-                3, 7, randEngine() % timeUnits) {}
+                3, 7, randEngine() % timeUnits,
+                'X' | COLOR_PAIR(NORMAL_INJURED)) {}
 
 bool AStarEnemy::move() {
     int newX = xPos, newY = yPos;
@@ -64,7 +66,7 @@ bool AStarEnemy::move() {
 }
 
 bool AStarEnemy::beAttacked(Aggressive &attacker) {
-    return AttackUtils::attack(attacker, *this, 'X' | COLOR_PAIR(NORMAL_INJURED));
+    return AttackUtils::attack(attacker, *this);
 }
 
 bool AStarEnemy::shouldIMove() {
