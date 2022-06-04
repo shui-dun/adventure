@@ -14,15 +14,15 @@ const char *MapUtils::EMPTY_SYMBOL = "  ";
 const char *MapUtils::BARRIER_SYMBOL = "  ";
 const char *MapUtils::BOXER_SYMBOL = "🙃";
 const char *MapUtils::BULLET_SYMBOL = "〇";
-const char *MapUtils::CURE_POTION_SYMBOL = "✝ ";
-const char *MapUtils::STRENGTH_POTION_SYMBOL = "⚔ ";
+const char *MapUtils::CURE_POTION_SYMBOL = "💗";
+const char *MapUtils::STRENGTH_POTION_SYMBOL = "🏹";
 const char *MapUtils::DEFEND_POTION_SYMBOL = "🔰";
 const char *MapUtils::MIND_CONTROL_POTION_SYMBOL = "🌀";
 const char *MapUtils::ENEMY_SHOOTER_SYMBOL = "🤡";
 const char *MapUtils::HERO_SHOOTER_UP_SYMBOL = "▲▲";
 const char *MapUtils::HERO_SHOOTER_DOWN_SYMBOL = "▼▼";
-const char *MapUtils::HERO_SHOOTER_LEFT_SYMBOL = "◀◀";
-const char *MapUtils::HERO_SHOOTER_RIGHT_SYMBOL = "▶▶";
+const char *MapUtils::HERO_SHOOTER_LEFT_SYMBOL = "⮜⬤";
+const char *MapUtils::HERO_SHOOTER_RIGHT_SYMBOL = "⬤➤";
 #else
 const char *MapUtils::EMPTY_SYMBOL = " ";
 const char *MapUtils::BARRIER_SYMBOL = " ";
@@ -226,6 +226,7 @@ void MapUtils::initColor() {
     init_pair(SOLID_BARRIER, COLOR_BLACK, COLOR_BLACK);
     init_pair(WEAK_BARRIER, COLOR_CYAN, COLOR_CYAN);
     init_pair(ENEMY, COLOR_BLUE, COLOR_WHITE);
+    init_pair(MIND_CONTROL, COLOR_WHITE, COLOR_BLUE);
     init_pair(HERO, COLOR_RED, COLOR_WHITE);
     init_pair(POTION, COLOR_WHITE, COLOR_GREEN);
 }

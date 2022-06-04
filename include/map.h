@@ -31,6 +31,7 @@ public:
         SOLID_BARRIER,
         WEAK_BARRIER,
         ENEMY,
+        MIND_CONTROL,
         HERO,
         POTION
     };

@@ -112,7 +112,7 @@ vector<Item *> HeroShooter::findNearestEnemies() {
 void HeroShooter::mindControl() {
     for (auto enemy: findNearestEnemies()) {
         enemy->camp = camp;
-        enemy->color = color;
+        enemy->color = COLOR_PAIR(MapUtils::MIND_CONTROL);
         MapUtils::updateAxis(enemy->xPos, enemy->yPos, enemy);
     }
 }
