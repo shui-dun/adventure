@@ -6,13 +6,16 @@
 
 class Potion : public Item {
 public:
-    Potion(int xPos, int yPos, chtype symbol, chtype color, CampEnum camp) : Item(xPos, yPos, symbol, color, camp) {}
+    Potion(int xPos, int yPos, chtype symbol, chtype color, CampEnum camp, int value)
+            : Item(xPos, yPos, symbol, color,
+                   camp), value(value) {}
+
+    int value;
 
     virtual void actOn(HeroShooter &hero) = 0;
 };
 
 class CurePotion : public Potion {
-    int value;
 public:
     CurePotion(int xPos, int yPos);
 
@@ -20,7 +23,6 @@ public:
 };
 
 class StrengthenPotion : public Potion {
-    int value;
 public:
     StrengthenPotion(int xPos, int yPos);
 
@@ -28,9 +30,15 @@ public:
 };
 
 class DefendPotion : public Potion {
-    int value;
 public:
     DefendPotion(int xPos, int yPos);
+
+    void actOn(HeroShooter &hero) override;
+};
+
+class MindControlPotion : public Potion {
+public:
+    MindControlPotion(int xPos, int yPos);
 
     void actOn(HeroShooter &hero) override;
 };

@@ -15,7 +15,7 @@ map<chtype, int> HeroShooter::directMap = {{'w', 0},
 HeroShooter::HeroShooter(int xPos, int yPos)
         : Shooter(xPos, yPos, 'A', COLOR_PAIR(MapUtils::ME), 20, 1,
                   1, 1, PLAYER, 3, 0),
-          score(0) {}
+          score(0), nMindControl(0) {}
 
 void HeroShooter::updateSymbol() {
     if (direction == 0) {
@@ -83,7 +83,10 @@ bool HeroShooter::act() {
         MapUtils::pause();
         return true;
     } else if (inputChar == 'c') {
-        mindControl();
+        if (nMindControl > 0) {
+            nMindControl--;
+            mindControl();
+        }
         return true;
     } else {
         return true;
@@ -92,8 +95,8 @@ bool HeroShooter::act() {
 
 vector<Item *> HeroShooter::findNearestEnemies() {
     vector<Item *> v;
-    for (int newX = xPos - 2; newX <= xPos + 2; newX++) {
-        for (int newY = yPos - 2; newY <= yPos + 2; newY++) {
+    for (int newX = xPos - 3; newX <= xPos + 3; newX++) {
+        for (int newY = yPos - 3; newY <= yPos + 3; newY++) {
             if (!MapUtils::isAxisLegal(newX, newY))
                 continue;
             auto item = globalMap[newX][newY];

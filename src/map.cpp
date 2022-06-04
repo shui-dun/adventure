@@ -110,8 +110,8 @@ void MapUtils::showInfo() {
             mapMutex.unlock();
             return;
         }
-        mvprintw(0, 1, "HP: %d ATK: %d DEF: %d SCORES: %d            ",
-                 myHero->healthPoint, myHero->bulletAttackVal, myHero->defendVal, myHero->score);
+        mvprintw(0, 1, "HP: %d ATK: %d DEF: %d MindCtrl: %d SCORE: %d            ",
+                 myHero->healthPoint, myHero->bulletAttackVal, myHero->defendVal, myHero->nMindControl, myHero->score);
         mapMutex.unlock();
         this_thread::sleep_for(chrono::milliseconds(500));
     }
@@ -133,8 +133,10 @@ void MapUtils::createRandomCharacter() {
     double randVal = distribution(randEngine);
     if (randVal < 0.4) {
         item = new RandomWalkBoxer(xPos, yPos);
-    } else if (randVal < 0.8) {
+    } else if (randVal < 0.5) {
         item = new RandomWalkShooter(xPos, yPos);
+    } else if (randVal < 0.8) {
+        item = new MindControlPotion(xPos, yPos);
     } else if (randVal < 0.9) {
         item = new CurePotion(xPos, yPos);
     } else if (randVal < 0.95) {

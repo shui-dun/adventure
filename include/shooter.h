@@ -41,6 +41,8 @@ public:
 
     int score;
 
+    int nMindControl;
+
     HeroShooter(int xPos, int yPos);
 
     bool act() override;
