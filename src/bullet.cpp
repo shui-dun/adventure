@@ -3,7 +3,7 @@
 #include "boxer.h"
 
 NormalBullet::NormalBullet(int xPos, int yPos, Shooter &launcher)
-        : Bullet(xPos, yPos, '*', launcher.color, launcher.camp,
+        : Bullet(xPos, yPos, MapUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
                  5, 3, 1, 0,
                  launcher.bulletAttackVal, launcher.direction) {}
 
@@ -20,18 +20,16 @@ bool HeroBullet::act() {
 }
 
 HeroBullet::HeroBullet(int xPos, int yPos, HeroShooter &launcher)
-        : Bullet(xPos, yPos, '*', launcher.color, launcher.camp,
+        : Bullet(xPos, yPos, MapUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
                  5, 3, 1, 0,
                  launcher.bulletAttackVal, launcher.direction), launcher(launcher) {}
 
 bool HeroBullet::attack(Vulnerable &vulnerable) {
-    auto aggressive = dynamic_cast<Aggressive *>(&vulnerable);
-    mvprintw(MapUtils::lines - 1, 1,
-             "Attack: Enemy(ATK=%d,DEF=%d,HP=%d)                ",
-             aggressive == nullptr ? 0 : aggressive->attackVal,
-             vulnerable.defendVal, vulnerable.healthPoint);
     int originHP = vulnerable.healthPoint;
     CampEnum oppositeCamp = dynamic_cast<Item &>(vulnerable).camp;
+    if (oppositeCamp != camp) {
+        MapUtils::showInfoOfItem(vulnerable);
+    }
     bool isEnemy = (oppositeCamp != camp && oppositeCamp != OBJECT);
     bool alive = AttackUtils::attack(*this, vulnerable);
     int descHP = 0;

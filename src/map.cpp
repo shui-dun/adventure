@@ -1,5 +1,5 @@
 #include "map.h"
-#include "curses.h"
+#include "cursesw.h"
 #include "mixin.h"
 #include "barrier.h"
 #include "boxer.h"
@@ -8,17 +8,48 @@
 
 using namespace std;
 
+
+#ifdef USE_UNICODE_CHARACTER
+const char *MapUtils::EMPTY_SYMBOL = "  ";
+const char *MapUtils::BARRIER_SYMBOL = "  ";
+const char *MapUtils::BOXER_SYMBOL = "🙃";
+const char *MapUtils::BULLET_SYMBOL = "〇";
+const char *MapUtils::CURE_POTION_SYMBOL = "✝ ";
+const char *MapUtils::STRENGTH_POTION_SYMBOL = "⚔ ";
+const char *MapUtils::DEFEND_POTION_SYMBOL = "🔰";
+const char *MapUtils::MIND_CONTROL_POTION_SYMBOL = "🌀";
+const char *MapUtils::ENEMY_SHOOTER_SYMBOL = "🤡";
+const char *MapUtils::HERO_SHOOTER_UP_SYMBOL = "▲▲";
+const char *MapUtils::HERO_SHOOTER_DOWN_SYMBOL = "▼▼";
+const char *MapUtils::HERO_SHOOTER_LEFT_SYMBOL = "◀◀";
+const char *MapUtils::HERO_SHOOTER_RIGHT_SYMBOL = "▶▶";
+#else
+const char *MapUtils::EMPTY_SYMBOL = " ";
+const char *MapUtils::BARRIER_SYMBOL = " ";
+const char *MapUtils::BOXER_SYMBOL = "O";
+const char *MapUtils::BULLET_SYMBOL = "*";
+const char *MapUtils::CURE_POTION_SYMBOL = "+";
+const char *MapUtils::STRENGTH_POTION_SYMBOL = "!";
+const char *MapUtils::DEFEND_POTION_SYMBOL = "U";
+const char *MapUtils::MIND_CONTROL_POTION_SYMBOL = "@";
+const char *MapUtils::ENEMY_SHOOTER_SYMBOL = "X";
+const char *MapUtils::HERO_SHOOTER_UP_SYMBOL = "A";
+const char *MapUtils::HERO_SHOOTER_DOWN_SYMBOL = "V";
+const char *MapUtils::HERO_SHOOTER_LEFT_SYMBOL = "<";
+const char *MapUtils::HERO_SHOOTER_RIGHT_SYMBOL = ">";
+#endif
+
 int MapUtils::lines = 0;
 
 int MapUtils::cols = 0;
 
 void MapUtils::init() {
+    setlocale(LC_ALL, "");
     initscr();
     lines = LINES < 26 ? LINES : 26;
     cols = COLS < 52 ? COLS : 52;
     raw();
     noecho();
-    keypad(stdscr, TRUE);
     curs_set(0);
     initColor();
     genWall();
@@ -61,25 +92,29 @@ void MapUtils::genRandomMap() {
 }
 
 void MapUtils::drawInit() {
-    for (int j = 0; j < lines; ++j) {
-        move(j, 0);
-        for (int i = 0; i < cols; ++i) {
-            if (globalMap[i][j] == nullptr) {
-                addch(' ' | COLOR_PAIR(BACKGROUND));
-            } else {
-                addch(globalMap[i][j]->symbol | globalMap[i][j]->color);
-            }
+    for (int i = 0; i < cols; ++i) {
+        for (int j = 0; j < lines; ++j) {
+            updateAxis(i, j, globalMap[i][j]);
         }
     }
     refresh();
 }
 
 void MapUtils::updateAxis(int x, int y, Item *item) {
+#ifdef USE_UNICODE_CHARACTER
+    int drawX = 2 * x;
+#else
+    int drawX = x;
+#endif
     globalMap[x][y] = item;
     if (item) {
-        mvaddch(y, x, item->symbol | item->color);
+        attron(item->color);
+        mvprintw(y, drawX, item->symbol);
+        attroff(item->color);
     } else {
-        mvaddch(y, x, ' ' | COLOR_PAIR(BACKGROUND));
+        attron(COLOR_PAIR(BACKGROUND));
+        mvprintw(y, drawX, EMPTY_SYMBOL);
+        attroff(COLOR_PAIR(BACKGROUND));
     }
 }
 
@@ -110,7 +145,7 @@ void MapUtils::showInfo() {
             mapMutex.unlock();
             return;
         }
-        mvprintw(0, 1, "HP: %d ATK: %d DEF: %d MindCtrl: %d SCORE: %d            ",
+        mvprintw(0, 2, "HP: %d ATK: %d DEF: %d MindCtrl: %d SCORE: %d            ",
                  myHero->healthPoint, myHero->bulletAttackVal, myHero->defendVal, myHero->nMindControl, myHero->score);
         mapMutex.unlock();
         this_thread::sleep_for(chrono::milliseconds(500));
@@ -133,9 +168,9 @@ void MapUtils::createRandomCharacter() {
     double randVal = distribution(randEngine);
     if (randVal < 0.4) {
         item = new RandomWalkBoxer(xPos, yPos);
-    } else if (randVal < 0.5) {
-        item = new RandomWalkShooter(xPos, yPos);
     } else if (randVal < 0.8) {
+        item = new RandomWalkShooter(xPos, yPos);
+    } else if (randVal < 0.85) {
         item = new MindControlPotion(xPos, yPos);
     } else if (randVal < 0.9) {
         item = new CurePotion(xPos, yPos);
@@ -153,12 +188,16 @@ void MapUtils::showGameOver() {
                                  "| (_| | (_| | | | | | |  __/ | (_) \\ V /  __/ |",
                                  " \\__, |\\__,_|_| |_| |_|\\___|  \\___/ \\_/ \\___|_|",
                                  " |___/"};
-    attron(COLOR_PAIR(INFO2));
+    attron(COLOR_PAIR(GAME_OVER_INFO));
     for (int i = 0; i < strs.size(); ++i) {
+#ifdef USE_UNICODE_CHARACTER
+        mvprintw(lines / 2 - 3 + i, cols - 25, strs[i]);
+#else
         mvprintw(lines / 2 - 3 + i, cols / 2 - 25, strs[i]);
+#endif
     }
-    attron(COLOR_PAIR(INFO));
-    mvprintw(lines - 1, 1, "Press Big Q to Continue...                       ");
+    attroff(COLOR_PAIR(GAME_OVER_INFO));
+    mvprintw(lines, 2, "Press Big Q to Continue...                       ");
     refresh();
     while (getch() != 'Q') {
     }
@@ -166,12 +205,12 @@ void MapUtils::showGameOver() {
 }
 
 void MapUtils::pause() {
-    mvprintw(MapUtils::lines - 1, 1,
+    mvprintw(lines, 2,
              "Game Paused, Press p to Continue                               ");
     refresh();
     while (getch() != 'p') {
     }
-    mvprintw(MapUtils::lines - 1, 1,
+    mvprintw(lines, 1,
              "                                                               ");
     refresh();
 }
@@ -183,13 +222,18 @@ bool MapUtils::isAxisLegal(int xPos, int yPos) {
 void MapUtils::initColor() {
     start_color();
     init_pair(BACKGROUND, COLOR_WHITE, COLOR_WHITE);
-    init_pair(INFO, COLOR_WHITE, COLOR_BLACK);
-    init_pair(INFO2, COLOR_BLACK, COLOR_WHITE);
+    init_pair(GAME_OVER_INFO, COLOR_BLACK, COLOR_WHITE);
     init_pair(SOLID_BARRIER, COLOR_BLACK, COLOR_BLACK);
-    init_pair(WEAK_BARRIER, COLOR_BLUE, COLOR_BLUE);
-    init_pair(NORMAL, COLOR_BLUE, COLOR_WHITE);
-    init_pair(MIND_CONTROL, COLOR_WHITE, COLOR_CYAN);
-    init_pair(ME, COLOR_CYAN, COLOR_WHITE);
+    init_pair(WEAK_BARRIER, COLOR_CYAN, COLOR_CYAN);
+    init_pair(ENEMY, COLOR_BLUE, COLOR_WHITE);
+    init_pair(HERO, COLOR_RED, COLOR_WHITE);
     init_pair(POTION, COLOR_WHITE, COLOR_GREEN);
-    attron(COLOR_PAIR(INFO));
+}
+
+void MapUtils::showInfoOfItem(Vulnerable &vulnerable) {
+    auto aggressive = dynamic_cast<Aggressive *>(&vulnerable);
+    mvprintw(lines - 1, 2,
+             "Attack: Enemy(ATK=%d,DEF=%d,HP=%d)                ",
+             aggressive == nullptr ? 0 : aggressive->attackVal,
+             vulnerable.defendVal, vulnerable.healthPoint);
 }

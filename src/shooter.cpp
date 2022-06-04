@@ -4,7 +4,7 @@
 #include "potion.h"
 #include <thread>
 #include <map>
-#include <curses.h>
+#include <cursesw.h>
 
 map<chtype, int> HeroShooter::directMap = {{'w', 0},
                                            {'s', 1},
@@ -13,19 +13,19 @@ map<chtype, int> HeroShooter::directMap = {{'w', 0},
 
 
 HeroShooter::HeroShooter(int xPos, int yPos)
-        : Shooter(xPos, yPos, 'A', COLOR_PAIR(MapUtils::ME), 20, 1,
+        : Shooter(xPos, yPos, MapUtils::HERO_SHOOTER_UP_SYMBOL, COLOR_PAIR(MapUtils::HERO), 20, 1,
                   1, 1, PLAYER, 3, 0),
           score(0), nMindControl(0) {}
 
 void HeroShooter::updateSymbol() {
     if (direction == 0) {
-        symbol = 'A';
+        symbol = MapUtils::HERO_SHOOTER_UP_SYMBOL;
     } else if (direction == 1) {
-        symbol = 'V';
+        symbol = MapUtils::HERO_SHOOTER_DOWN_SYMBOL;
     } else if (direction == 2) {
-        symbol = '<';
+        symbol = MapUtils::HERO_SHOOTER_LEFT_SYMBOL;
     } else if (direction == 3) {
-        symbol = '>';
+        symbol = MapUtils::HERO_SHOOTER_RIGHT_SYMBOL;
     }
 }
 
@@ -112,7 +112,7 @@ vector<Item *> HeroShooter::findNearestEnemies() {
 void HeroShooter::mindControl() {
     for (auto enemy: findNearestEnemies()) {
         enemy->camp = camp;
-        enemy->color = COLOR_PAIR(MapUtils::MIND_CONTROL);
+        enemy->color = color;
         MapUtils::updateAxis(enemy->xPos, enemy->yPos, enemy);
     }
 }
@@ -120,7 +120,7 @@ void HeroShooter::mindControl() {
 
 RandomWalkShooter::RandomWalkShooter(int xPos, int yPos)
         : Shooter(xPos, yPos,
-                  'X', COLOR_PAIR(MapUtils::NORMAL),
+                  MapUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(MapUtils::ENEMY),
                   6 + AttackUtils::healthPointGainOfEnemies(),
                   1 + AttackUtils::defendValGainOfEnemies(),
                   6,

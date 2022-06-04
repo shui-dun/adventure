@@ -1,7 +1,7 @@
 #ifndef ADVENTURE_ATTACK_H
 #define ADVENTURE_ATTACK_H
 
-#include <curses.h>
+#include <cursesw.h>
 
 class Vulnerable {
 public:

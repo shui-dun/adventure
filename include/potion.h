@@ -6,7 +6,7 @@
 
 class Potion : public Item {
 public:
-    Potion(int xPos, int yPos, chtype symbol, chtype color, CampEnum camp, int value)
+    Potion(int xPos, int yPos, const char *symbol, chtype color, CampEnum camp, int value)
             : Item(xPos, yPos, symbol, color,
                    camp), value(value) {}
 

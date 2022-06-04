@@ -7,7 +7,7 @@
 
 class Barrier : public Item {
 public:
-    Barrier(int xPos, int yPos, chtype symbol, chtype color, CampEnum camp)
+    Barrier(int xPos, int yPos, const char *symbol, chtype color, CampEnum camp)
             : Item(xPos, yPos, symbol, color, camp) {}
 };
 

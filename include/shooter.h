@@ -15,7 +15,7 @@ public:
 
     int direction;
 
-    Shooter(int xPos, int yPos, chtype symbol, chtype color, int healthPoint, int defendVal,
+    Shooter(int xPos, int yPos, const char *symbol, chtype color, int healthPoint, int defendVal,
             unsigned int timeUnits, unsigned int curTimeUnit,
             CampEnum camp,
             int bulletAttackVal, int direction) :

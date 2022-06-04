@@ -9,7 +9,7 @@
 
 class Bullet : public Item, public Movable, public Vulnerable, public Aggressive {
 public:
-    Bullet(int xPos, int yPos, chtype symbol, chtype color, CampEnum camp, unsigned int timeUnits,
+    Bullet(int xPos, int yPos, const char *symbol, chtype color, CampEnum camp, unsigned int timeUnits,
            unsigned int curTimeUnit,
            int healthPoint, int defendVal, int attackVal, int direction)
             : Item(xPos, yPos, symbol, color, camp),

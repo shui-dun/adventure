@@ -5,7 +5,13 @@ set(CMAKE_BUILD_RPATH_USE_ORIGIN on)
 set(CMAKE_VERBOSE_MAKEFILE on)
 include_directories(include)
 
+if (USE_UNICODE)
+    add_compile_options(-DUSE_UNICODE_CHARACTER)
+    set(CURSES_NEED_WIDE TRUE)
+endif ()
+
 find_package(Curses REQUIRED)
+
 if (UNIX)
     include_directories(${CURSES_INCLUDE_DIR})
 else ()

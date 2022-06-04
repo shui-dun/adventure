@@ -1,7 +1,7 @@
 #ifndef ADVENTURE_ITEM_H
 #define ADVENTURE_ITEM_H
 
-#include <curses.h>
+#include <cursesw.h>
 
 class Item {
 public:
@@ -9,11 +9,10 @@ public:
     enum CampEnum {
         OBJECT,
         ENEMY,
-        PLAYER,
-        PLAYER2
+        PLAYER
     };
 
-    Item(int xPos, int yPos, chtype symbol, chtype color, CampEnum camp)
+    Item(int xPos, int yPos, const char *symbol, chtype color, CampEnum camp)
             : xPos(xPos), yPos(yPos), symbol(symbol), color(color), camp(camp) {}
 
     virtual ~Item() = default;
@@ -22,7 +21,7 @@ public:
 
     int xPos;
     int yPos;
-    chtype symbol;
+    const char *symbol;
     chtype color;
 
 };
