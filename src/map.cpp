@@ -7,6 +7,7 @@
 #include <thread>
 #include <mutex>
 #include <random>
+#include <fstream>
 
 using namespace std;
 
@@ -22,7 +23,11 @@ mt19937 MapUtils::randEngine;
 
 void MapUtils::init() {
     genWall();
-    genRandomMap();
+    if (uniform_real_distribution<double>(0, 1.0)(randEngine) < 0.0) {
+        genRandomMap();
+    } else {
+        genRecursiveSegmentationMap(1, 1, nCols() - 2, nLines() - 2);
+    }
     createInitCharacters();
 }
 
@@ -43,7 +48,6 @@ void MapUtils::genWall() {
 }
 
 void MapUtils::genRandomMap() {
-    // 除了这种点状地图，以后还要产生几种迷宫地图
     for (int i = 1; i < nCols() - 1; ++i) {
         for (int j = 1; j < nLines() - 1; ++j) {
             if (gameMap[i][j] != nullptr) {
@@ -168,4 +172,59 @@ int MapUtils::nCols() {
     return int(gameMap.size());
 }
 
+
+void MapUtils::genRecursiveSegmentationMap(int xFrom, int yFrom, int xTo, int yTo) {
+    if (xTo - xFrom <= 1 || yTo - yFrom <= 1) {
+        return;
+    }
+    int xMid = uniform_int_distribution<int>(xFrom + 1, xTo - 1)(randEngine);
+    int yMid = uniform_int_distribution<int>(yFrom + 1, yTo - 1)(randEngine);
+    genLineOfWall(yFrom, yMid, xMid, false);
+    genLineOfWall(yMid + 1, yTo, xMid, false);
+    genLineOfWall(xFrom, xMid - 1, yMid, true);
+    genLineOfWall(xMid + 1, xTo, yMid, true);
+    genRecursiveSegmentationMap(xFrom, yFrom, xMid - 1, yMid - 1);
+    genRecursiveSegmentationMap(xMid + 1, yFrom, xTo, yMid - 1);
+    genRecursiveSegmentationMap(xFrom, yMid + 1, xMid - 1, yTo);
+    genRecursiveSegmentationMap(xMid + 1, yMid + 1, xTo, yTo);
+}
+
+void MapUtils::genLineOfWall(int fromY, int toY, int x, bool horizontal) {
+    bool solid = uniform_int_distribution<int>(0, 1)(randEngine) == 1;
+    uniform_real_distribution<double> d(0, 1.0);
+    double emptyProb = 0.2;
+    if (!horizontal && !solid) {
+        for (int i = fromY; i <= toY; i++) {
+            if (d(randEngine) > emptyProb) {
+                gameMap[x][i] = new WeakBarrier(x, i);
+            }
+        }
+    } else if (!horizontal && solid) {
+        for (int i = fromY; i <= toY; i++) {
+            if (d(randEngine) > emptyProb) {
+                gameMap[x][i] = new SolidBarrier(x, i);
+            }
+        }
+    } else if (horizontal && !solid) {
+        for (int i = fromY; i <= toY; i++) {
+            if (d(randEngine) > emptyProb) {
+                gameMap[i][x] = new WeakBarrier(i, x);
+            }
+        }
+    } else {
+        for (int i = fromY; i <= toY; i++) {
+            if (d(randEngine) > emptyProb) {
+                gameMap[i][x] = new SolidBarrier(i, x);
+            }
+        }
+    }
+    int holePos = uniform_int_distribution<int>(fromY, toY)(randEngine);
+    if (!horizontal) {
+        delete gameMap[x][holePos];
+        gameMap[x][holePos] = nullptr;
+    } else {
+        delete gameMap[holePos][x];
+        gameMap[holePos][x] = nullptr;
+    }
+}
 

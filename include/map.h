@@ -14,8 +14,10 @@ class MapUtils {
 
     static bool shouldMove(Movable &movable);
 
+    static void genLineOfWall(int fromY, int toY, int x, bool horizontal);
+
 public:
-    static vector <vector<Item*>> gameMap;
+    static vector<vector<Item *>> gameMap;
 
     static HeroShooter *myHero;
 
@@ -30,6 +32,8 @@ public:
     static void genWall();
 
     static void genRandomMap();
+
+    static void genRecursiveSegmentationMap(int xFrom, int yFrom, int xTo, int yTo);
 
     static void createInitCharacters();
 
