@@ -1,9 +1,9 @@
 #include "bullet.h"
-#include "mixin.h"
+#include "draw.h"
 #include "boxer.h"
 
 NormalBullet::NormalBullet(int xPos, int yPos, Shooter &launcher)
-        : Bullet(xPos, yPos, MapUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
+        : Bullet(xPos, yPos, DrawUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
                  5, 3, 1, 0,
                  launcher.bulletAttackVal, launcher.direction) {}
 
@@ -20,7 +20,7 @@ bool HeroBullet::act() {
 }
 
 HeroBullet::HeroBullet(int xPos, int yPos, HeroShooter &launcher)
-        : Bullet(xPos, yPos, MapUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
+        : Bullet(xPos, yPos, DrawUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
                  5, 3, 1, 0,
                  launcher.bulletAttackVal, launcher.direction), launcher(launcher) {}
 
@@ -28,7 +28,7 @@ bool HeroBullet::attack(Vulnerable &vulnerable) {
     int originHP = vulnerable.healthPoint;
     CampEnum oppositeCamp = dynamic_cast<Item &>(vulnerable).camp;
     if (oppositeCamp != camp) {
-        MapUtils::showInfoOfItem(vulnerable);
+        DrawUtils::genCurEnemyInfo(vulnerable);
     }
     bool isEnemy = (oppositeCamp != camp && oppositeCamp != OBJECT);
     bool alive = AttackUtils::attack(*this, vulnerable);
@@ -43,13 +43,13 @@ bool HeroBullet::attack(Vulnerable &vulnerable) {
 }
 
 bool BulletUtils::defaultAction(Bullet &bullet) {
-    auto p = MoveUtils::nextPosOfDirection(bullet, bullet.direction);
+    auto p = MapUtils::nextPosOfDirection(bullet, bullet.direction);
     int newX = p.first, newY = p.second;
-    if (globalMap[newX][newY] == nullptr) {
-        MoveUtils::moveToPos(bullet, newX, newY);
+    if (MapUtils::gameMap[newX][newY] == nullptr) {
+        MapUtils::moveToPos(bullet, newX, newY);
         return true;
     } else {
-        auto vulnerable = dynamic_cast<Vulnerable *>(globalMap[newX][newY]);
+        auto vulnerable = dynamic_cast<Vulnerable *>(MapUtils::gameMap[newX][newY]);
         if (vulnerable) {
             bullet.attack(*vulnerable);
         }

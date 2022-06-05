@@ -1,7 +1,6 @@
 #include "attack.h"
 #include "item.h"
 #include "map.h"
-#include "mixin.h"
 
 bool AttackUtils::attack(int attackVal, Vulnerable &attacked) {
     if (attacked.defendVal > attackVal) {
@@ -11,9 +10,9 @@ bool AttackUtils::attack(int attackVal, Vulnerable &attacked) {
     Item &attackedItem = dynamic_cast<Item &>(attacked);
     if (attacked.healthPoint <= 0) {
         if (dynamic_cast<HeroShooter *>(&attacked)) {
-            gameOver = true;
+            MapUtils::gameOver = true;
         }
-        MapUtils::updateAxis(attackedItem.xPos, attackedItem.yPos, nullptr);
+        MapUtils::gameMap[attackedItem.xPos][attackedItem.yPos] = nullptr;
         delete &attacked;
         return false;
     } else {
@@ -30,14 +29,14 @@ bool AttackUtils::attack(Aggressive &attacker, Vulnerable &attacked) {
 }
 
 int AttackUtils::attackValGainOfEnemies() {
-    return myHero->score / 30;
+    return MapUtils::myHero->score / 30;
 }
 
 int AttackUtils::defendValGainOfEnemies() {
-    return myHero->score / 50;
+    return MapUtils::myHero->score / 50;
 }
 
 int AttackUtils::healthPointGainOfEnemies() {
-    return myHero->score / 30;
+    return MapUtils::myHero->score / 30;
 }
 

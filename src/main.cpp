@@ -8,22 +8,40 @@
 #include "map.h"
 #include "potion.h"
 #include "move.h"
-#include "mixin.h"
+#include "draw.h"
 #include "shooter.h"
 using namespace std;
 
+void runGame() {
+    uniform_real_distribution<float> distribution(0.0, 1.0);
+    while (true) {
+        this_thread::sleep_for(chrono::milliseconds(100));
+        MapUtils::mapMutex.lock();
+
+        if (MapUtils::gameOver) {
+            MapUtils::mapMutex.unlock();
+            return;
+        }
+
+        MapUtils::moveAllCharacters();
+
+        if (distribution(MapUtils::randEngine) < 0.016) {
+            MapUtils::createRandomCharacter();
+        }
+
+        DrawUtils::draw();
+
+        MapUtils::mapMutex.unlock();
+    }
+}
+
 int main() {
-    std::random_device rd;
-    randEngine.seed(rd());
+    MapUtils::randEngine.seed(random_device()());
+    DrawUtils::init();
     MapUtils::init();
-    thread t1(MapUtils::createCharacters);
-    thread t2(MoveUtils::moveMyHero);
-    thread t3(MoveUtils::moveAllCharacters);
-    thread t4(MapUtils::showInfo);
-    t1.detach();
-    t2.detach();
-    t3.detach();
-    t4.join();
-    MapUtils::showGameOver();
+    thread t(MapUtils::moveMyHero);
+    runGame();
+    t.detach();
+    DrawUtils::showGameOver();
     return 0;
 }

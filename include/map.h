@@ -3,66 +3,51 @@
 
 #include "item.h"
 #include "bullet.h"
+#include "shooter.h"
+#include <vector>
+#include <random>
+#include <mutex>
+
+using namespace std;
 
 class MapUtils {
-    static void createRandomCharacter();
+
+    static bool shouldMove(Movable &movable);
 
 public:
+    static vector <vector<Item*>> gameMap;
 
+    static HeroShooter *myHero;
 
-    static const char *EMPTY_SYMBOL;
-    static const char *BARRIER_SYMBOL;
-    static const char *BOXER_SYMBOL;
-    static const char *BULLET_SYMBOL;
-    static const char *CURE_POTION_SYMBOL;
-    static const char *STRENGTH_POTION_SYMBOL;
-    static const char *DEFEND_POTION_SYMBOL;
-    static const char *MIND_CONTROL_POTION_SYMBOL;
-    static const char *ENEMY_SHOOTER_SYMBOL;
-    static const char *HERO_SHOOTER_UP_SYMBOL;
-    static const char *HERO_SHOOTER_DOWN_SYMBOL;
-    static const char *HERO_SHOOTER_LEFT_SYMBOL;
-    static const char *HERO_SHOOTER_RIGHT_SYMBOL;
+    static bool gameOver;
 
+    static mutex mapMutex;
 
-    enum colorEnum {
-        BACKGROUND = 1,
-        GAME_OVER_INFO,
-        SOLID_BARRIER,
-        WEAK_BARRIER,
-        ENEMY,
-        MIND_CONTROL,
-        HERO,
-        POTION
-    };
-
-    static int lines;
-
-    static int cols;
+    static mt19937 randEngine;
 
     static void init();
-
-    static void initColor();
 
     static void genWall();
 
     static void genRandomMap();
 
-    static void drawInit();
-
-    static void updateAxis(int x, int y, Item *item);
-
-    static void createCharacters();
-
-    static void showInfo();
-
-    static void pause();
-
-    static void showGameOver();
+    static void createInitCharacters();
 
     static bool isAxisLegal(int xPos, int yPos);
 
-    static void showInfoOfItem(Vulnerable &vulnerable);
+    static pair<int, int> nextPosOfDirection(Item &item, int direction);
+
+    static void moveAllCharacters();
+
+    static void moveMyHero();
+
+    static void moveToPos(Item &item, int newX, int newY);
+
+    static int nLines();
+
+    static int nCols();
+
+    static void createRandomCharacter();
 };
 
 

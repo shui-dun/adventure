@@ -1,8 +1,9 @@
 #include "shooter.h"
-#include "mixin.h"
+#include "draw.h"
 #include "map.h"
 #include "potion.h"
 #include <thread>
+#include <random>
 #include <map>
 #include <cursesw.h>
 
@@ -13,19 +14,19 @@ map<chtype, int> HeroShooter::directMap = {{'w', 0},
 
 
 HeroShooter::HeroShooter(int xPos, int yPos)
-        : Shooter(xPos, yPos, MapUtils::HERO_SHOOTER_UP_SYMBOL, COLOR_PAIR(MapUtils::HERO), 20, 1,
+        : Shooter(xPos, yPos, DrawUtils::HERO_SHOOTER_UP_SYMBOL, COLOR_PAIR(DrawUtils::HERO), 20, 1,
                   1, 1, PLAYER, 3, 0),
           score(0), nMindControl(0) {}
 
 void HeroShooter::updateSymbol() {
     if (direction == 0) {
-        symbol = MapUtils::HERO_SHOOTER_UP_SYMBOL;
+        symbol = DrawUtils::HERO_SHOOTER_UP_SYMBOL;
     } else if (direction == 1) {
-        symbol = MapUtils::HERO_SHOOTER_DOWN_SYMBOL;
+        symbol = DrawUtils::HERO_SHOOTER_DOWN_SYMBOL;
     } else if (direction == 2) {
-        symbol = MapUtils::HERO_SHOOTER_LEFT_SYMBOL;
+        symbol = DrawUtils::HERO_SHOOTER_LEFT_SYMBOL;
     } else if (direction == 3) {
-        symbol = MapUtils::HERO_SHOOTER_RIGHT_SYMBOL;
+        symbol = DrawUtils::HERO_SHOOTER_RIGHT_SYMBOL;
     }
 }
 
@@ -33,19 +34,19 @@ bool HeroShooter::act() {
     int newX, newY;
     if (directMap.find(inputChar) != directMap.end()) {
         if (direction == directMap[inputChar]) {
-            auto p = MoveUtils::nextPosOfDirection(*this, direction);
+            auto p = MapUtils::nextPosOfDirection(*this, direction);
             newX = p.first;
             newY = p.second;
-            Item *item = globalMap[newX][newY];
+            Item *item = MapUtils::gameMap[newX][newY];
             if (item == nullptr) {
-                MoveUtils::moveToPos(*this, newX, newY);
+                MapUtils::moveToPos(*this, newX, newY);
                 return true;
             } else {
                 auto potion = dynamic_cast<Potion *>(item);
                 auto aggressive = dynamic_cast<Aggressive *>(item);
                 if (potion) {
                     potion->actOn(*this);
-                    MoveUtils::moveToPos(*this, newX, newY);
+                    MapUtils::moveToPos(*this, newX, newY);
                     return true;
                 } else if (aggressive) {
                     return aggressive->attack(*this);
@@ -56,18 +57,18 @@ bool HeroShooter::act() {
         } else {
             direction = directMap[inputChar];
             updateSymbol();
-            MapUtils::updateAxis(xPos, yPos, this);
+            MapUtils::gameMap[xPos][yPos] = this;
             return true;
         }
     } else if (inputChar == ' ') {
-        auto p = MoveUtils::nextPosOfDirection(*this, direction);
+        auto p = MapUtils::nextPosOfDirection(*this, direction);
         int bulletX = p.first, bulletY = p.second;
         auto bullet = new HeroBullet(bulletX, bulletY, *this);
-        if (globalMap[bulletX][bulletY] == nullptr) {
-            MapUtils::updateAxis(bulletX, bulletY, bullet);
+        if (MapUtils::gameMap[bulletX][bulletY] == nullptr) {
+            MapUtils::gameMap[bulletX][bulletY] = bullet;
             return true;
         } else {
-            auto vulnerable = dynamic_cast<Vulnerable *>(globalMap[bulletX][bulletY]);
+            auto vulnerable = dynamic_cast<Vulnerable *>(MapUtils::gameMap[bulletX][bulletY]);
             if (vulnerable) {
                 bullet->attack(*vulnerable);
             }
@@ -75,12 +76,12 @@ bool HeroShooter::act() {
             return true;
         }
     } else if (inputChar == 'Q') {
-        MapUtils::updateAxis(xPos, yPos, nullptr);
+        MapUtils::gameMap[xPos][yPos] = nullptr;
         delete this;
-        gameOver = true;
+        MapUtils::gameOver = true;
         return false;
     } else if (inputChar == 'p') {
-        MapUtils::pause();
+        DrawUtils::pause();
         return true;
     } else if (inputChar == 'c') {
         if (nMindControl > 0) {
@@ -99,7 +100,7 @@ vector<Item *> HeroShooter::findNearestEnemies() {
         for (int newY = yPos - 3; newY <= yPos + 3; newY++) {
             if (!MapUtils::isAxisLegal(newX, newY))
                 continue;
-            auto item = globalMap[newX][newY];
+            auto item = MapUtils::gameMap[newX][newY];
             if (item == nullptr)
                 continue;
             if (item->camp != camp && item->camp != OBJECT)
@@ -112,32 +113,32 @@ vector<Item *> HeroShooter::findNearestEnemies() {
 void HeroShooter::mindControl() {
     for (auto enemy: findNearestEnemies()) {
         enemy->camp = camp;
-        enemy->color = COLOR_PAIR(MapUtils::MIND_CONTROL);
-        MapUtils::updateAxis(enemy->xPos, enemy->yPos, enemy);
+        enemy->color = COLOR_PAIR(DrawUtils::MIND_CONTROL);
+        MapUtils::gameMap[enemy->xPos][enemy->yPos] = enemy;
     }
 }
 
 
 RandomWalkShooter::RandomWalkShooter(int xPos, int yPos)
         : Shooter(xPos, yPos,
-                  MapUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(MapUtils::ENEMY),
+                  DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::ENEMY),
                   6 + AttackUtils::healthPointGainOfEnemies(),
                   1 + AttackUtils::defendValGainOfEnemies(),
                   6,
-                  randEngine() % 6,
+                  MapUtils::randEngine() % 6,
                   ENEMY,
                   3 + AttackUtils::attackValGainOfEnemies(),
                   0) {}
 
 bool RandomWalkShooter::act() {
-    direction = uniform_int_distribution<int>(0, 3)(randEngine);
-    auto p = MoveUtils::nextPosOfDirection(*this, direction);
-    double choice = uniform_real_distribution<double>(0, 1)(randEngine);
+    direction = uniform_int_distribution<int>(0, 3)(MapUtils::randEngine);
+    auto p = MapUtils::nextPosOfDirection(*this, direction);
+    double choice = uniform_real_distribution<double>(0, 1)(MapUtils::randEngine);
     int newX = p.first, newY = p.second;
     if (choice < 0.5) {
-        Item *item = globalMap[newX][newY];
+        Item *item = MapUtils::gameMap[newX][newY];
         if (item == nullptr) {
-            MoveUtils::moveToPos(*this, newX, newY);
+            MapUtils::moveToPos(*this, newX, newY);
             return true;
         } else {
             auto aggressive = dynamic_cast<Aggressive *>(item);
@@ -149,11 +150,11 @@ bool RandomWalkShooter::act() {
         }
     } else {
         auto bullet = new NormalBullet(newX, newY, *this);
-        if (globalMap[newX][newY] == nullptr) {
-            MapUtils::updateAxis(newX, newY, bullet);
+        if (MapUtils::gameMap[newX][newY] == nullptr) {
+            MapUtils::gameMap[newX][newY] = bullet;
             return true;
         } else {
-            auto vulnerable = dynamic_cast<Vulnerable *>(globalMap[newX][newY]);
+            auto vulnerable = dynamic_cast<Vulnerable *>(MapUtils::gameMap[newX][newY]);
             if (vulnerable) {
                 bullet->attack(*vulnerable);
             }

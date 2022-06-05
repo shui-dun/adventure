@@ -7,6 +7,8 @@
 #include <map>
 #include <vector>
 
+using namespace std;
+
 
 class Shooter : public Item, public Vulnerable, public Movable {
 public:
