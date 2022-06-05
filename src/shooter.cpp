@@ -38,7 +38,7 @@ bool HeroShooter::act() {
             newX = p.first;
             newY = p.second;
             Item *item = MapUtils::gameMap[newX][newY];
-            if (item == nullptr) {
+            if (!item) {
                 MapUtils::moveToPos(*this, newX, newY);
                 return true;
             } else {
@@ -64,7 +64,7 @@ bool HeroShooter::act() {
         auto p = MapUtils::nextPosOfDirection(*this, direction);
         int bulletX = p.first, bulletY = p.second;
         auto bullet = new HeroBullet(bulletX, bulletY, *this);
-        if (MapUtils::gameMap[bulletX][bulletY] == nullptr) {
+        if (!MapUtils::gameMap[bulletX][bulletY]) {
             MapUtils::gameMap[bulletX][bulletY] = bullet;
             return true;
         } else {
@@ -101,7 +101,7 @@ vector<Item *> HeroShooter::findNearestEnemies() {
             if (!MapUtils::isAxisLegal(newX, newY))
                 continue;
             auto item = MapUtils::gameMap[newX][newY];
-            if (item == nullptr)
+            if (!item)
                 continue;
             if (item->camp != camp && item->camp != OBJECT)
                 v.push_back(item);
@@ -137,7 +137,7 @@ bool RandomWalkShooter::act() {
     int newX = p.first, newY = p.second;
     if (choice < 0.5) {
         Item *item = MapUtils::gameMap[newX][newY];
-        if (item == nullptr) {
+        if (!item) {
             MapUtils::moveToPos(*this, newX, newY);
             return true;
         } else {
@@ -150,7 +150,7 @@ bool RandomWalkShooter::act() {
         }
     } else {
         auto bullet = new NormalBullet(newX, newY, *this);
-        if (MapUtils::gameMap[newX][newY] == nullptr) {
+        if (!MapUtils::gameMap[newX][newY]) {
             MapUtils::gameMap[newX][newY] = bullet;
             return true;
         } else {

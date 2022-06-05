@@ -1,6 +1,7 @@
 #include "attack.h"
 #include "item.h"
 #include "map.h"
+#include "draw.h"
 
 bool AttackUtils::attack(int attackVal, Vulnerable &attacked) {
     if (attacked.defendVal > attackVal) {
@@ -24,6 +25,12 @@ bool AttackUtils::attack(Aggressive &attacker, Vulnerable &attacked) {
     if (dynamic_cast<Item &>(attacker).camp == dynamic_cast<Item &>(attacked).camp) {
         return true;
     } else {
+        if (dynamic_cast<HeroShooter *>(&attacked)) {
+            auto attack = dynamic_cast<Vulnerable *>(&attacker);
+            if (attack) {
+                DrawUtils::genCurEnemyInfo(*attack);
+            }
+        }
         return attack(attacker.attackVal, attacked);
     }
 }

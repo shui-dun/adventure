@@ -18,7 +18,7 @@ bool RandomWalkBoxer::act() {
     int direction = distribution(MapUtils::randEngine);
     auto p = MapUtils::nextPosOfDirection(*this, direction);
     int newX = p.first, newY = p.second;
-    if (MapUtils::gameMap[newX][newY] == nullptr) {
+    if (!MapUtils::gameMap[newX][newY]) {
         MapUtils::moveToPos(*this, newX, newY);
         return true;
     } else if (dynamic_cast<Vulnerable *>(MapUtils::gameMap[newX][newY])) {

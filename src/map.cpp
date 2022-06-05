@@ -50,7 +50,7 @@ void MapUtils::genWall() {
 void MapUtils::genRandomMap() {
     for (int i = 1; i < nCols() - 1; ++i) {
         for (int j = 1; j < nLines() - 1; ++j) {
-            if (gameMap[i][j] != nullptr) {
+            if (gameMap[i][j]) {
                 continue;
             }
             uniform_real_distribution<float> distribution(0.0, 1.0);
@@ -80,7 +80,7 @@ void MapUtils::createRandomCharacter() {
     while (true) {
         xPos = xDistribution(randEngine);
         yPos = yDistribution(randEngine);
-        if (gameMap[xPos][yPos] == nullptr) {
+        if (!gameMap[xPos][yPos]) {
             break;
         }
     }
@@ -131,7 +131,7 @@ void MapUtils::moveAllCharacters() {
     for (int i = 1; i < nCols() - 1; ++i) {
         for (int j = 1; j < nLines() - 1; ++j) {
             auto movable = dynamic_cast<Movable *>(gameMap[i][j]);
-            if (movable == nullptr)
+            if (!movable)
                 continue;
             if (dynamic_cast<HeroShooter *>(movable))
                 continue;

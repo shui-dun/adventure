@@ -45,7 +45,7 @@ bool HeroBullet::attack(Vulnerable &vulnerable) {
 bool BulletUtils::defaultAction(Bullet &bullet) {
     auto p = MapUtils::nextPosOfDirection(bullet, bullet.direction);
     int newX = p.first, newY = p.second;
-    if (MapUtils::gameMap[newX][newY] == nullptr) {
+    if (!MapUtils::gameMap[newX][newY]) {
         MapUtils::moveToPos(bullet, newX, newY);
         return true;
     } else {
