@@ -1,30 +1,30 @@
-#include "bullet.h"
+#include "arrow.h"
 #include "draw.h"
-#include "boxer.h"
+#include "swordsman.h"
 
-NormalBullet::NormalBullet(int xPos, int yPos, Shooter &launcher)
-        : Bullet(xPos, yPos, DrawUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
-                 5, 3, 1, 0,
-                 launcher.bulletAttackVal, launcher.direction) {}
+NormalArrow::NormalArrow(int xPos, int yPos, Archer &launcher)
+        : Arrow(xPos, yPos, DrawUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
+                5, 3, 1, 0,
+                launcher.arrowAttackVal, launcher.direction) {}
 
-bool NormalBullet::act() {
-    return BulletUtils::defaultAction(*this);
+bool NormalArrow::act() {
+    return ArrowUtils::defaultAction(*this);
 }
 
-bool NormalBullet::attack(Vulnerable &vulnerable) {
+bool NormalArrow::attack(Vulnerable &vulnerable) {
     return AttackUtils::attack(*this, vulnerable);
 }
 
-bool HeroBullet::act() {
-    return BulletUtils::defaultAction(*this);
+bool HeroArrow::act() {
+    return ArrowUtils::defaultAction(*this);
 }
 
-HeroBullet::HeroBullet(int xPos, int yPos, HeroShooter &launcher)
-        : Bullet(xPos, yPos, DrawUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
-                 5, 3, 1, 0,
-                 launcher.bulletAttackVal, launcher.direction), launcher(launcher) {}
+HeroArrow::HeroArrow(int xPos, int yPos, HeroArcher &launcher)
+        : Arrow(xPos, yPos, DrawUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
+                5, 3, 1, 0,
+                launcher.arrowAttackVal, launcher.direction), launcher(launcher) {}
 
-bool HeroBullet::attack(Vulnerable &vulnerable) {
+bool HeroArrow::attack(Vulnerable &vulnerable) {
     int originHP = vulnerable.healthPoint;
     CampEnum oppositeCamp = dynamic_cast<Item &>(vulnerable).camp;
     if (oppositeCamp != camp) {
@@ -42,7 +42,7 @@ bool HeroBullet::attack(Vulnerable &vulnerable) {
     return alive;
 }
 
-bool BulletUtils::defaultAction(Bullet &bullet) {
+bool ArrowUtils::defaultAction(Arrow &bullet) {
     auto p = MapUtils::nextPosOfDirection(bullet, bullet.direction);
     int newX = p.first, newY = p.second;
     if (!MapUtils::gameMap[newX][newY]) {

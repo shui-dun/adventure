@@ -1,7 +1,7 @@
 #include "map.h"
 #include "cursesw.h"
 #include "barrier.h"
-#include "boxer.h"
+#include "swordsman.h"
 #include "potion.h"
 #include "draw.h"
 #include <thread>
@@ -14,7 +14,7 @@ using namespace std;
 
 vector<vector<Item *>> MapUtils::gameMap;
 
-HeroShooter *MapUtils::myHero;
+HeroArcher *MapUtils::myHero;
 
 bool MapUtils::gameOver;
 
@@ -70,7 +70,7 @@ void MapUtils::createInitCharacters() {
     while (gameMap[xPos][yPos]) {
         xPos++;
     }
-    myHero = new HeroShooter(xPos, yPos);
+    myHero = new HeroArcher(xPos, yPos);
     gameMap[xPos][yPos] = myHero;
 
     for (int i = 0; i < 20; ++i) {
@@ -94,13 +94,13 @@ void MapUtils::createRandomCharacter() {
     uniform_real_distribution<float> distribution(0.0, 1.0);
     double randVal = distribution(randEngine);
     if (randVal < 0.35) {
-        item = new RandomWalkBoxer(xPos, yPos);
+        item = new RandomWalkSwordsman(xPos, yPos);
     } else if (randVal < 0.4) {
-        item = new SmartBoxer(xPos, yPos);
+        item = new SmartSwordsman(xPos, yPos);
     } else if (randVal < 0.75) {
-        item = new RandomWalkShooter(xPos, yPos);
+        item = new RandomWalkArcher(xPos, yPos);
     } else if (randVal < 0.8) {
-        item = new SmartShooter(xPos, yPos);
+        item = new SmartArcher(xPos, yPos);
     } else if (randVal < 0.85) {
         item = new MindControlPotion(xPos, yPos);
     } else if (randVal < 0.9) {
@@ -147,7 +147,7 @@ void MapUtils::moveAllCharacters() {
             auto movable = dynamic_cast<Movable *>(gameMap[i][j]);
             if (!movable)
                 continue;
-            if (dynamic_cast<HeroShooter *>(movable))
+            if (dynamic_cast<HeroArcher *>(movable))
                 continue;
             if (!shouldMove(*movable))
                 continue;

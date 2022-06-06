@@ -1,7 +1,7 @@
 #ifndef ADVENTURE_POTION_H
 #define ADVENTURE_POTION_H
 
-#include "shooter.h"
+#include "archer.h"
 #include "item.h"
 
 class Potion : public Item {
@@ -12,35 +12,35 @@ public:
 
     int value;
 
-    virtual void actOn(HeroShooter &hero) = 0;
+    virtual void actOn(HeroArcher &hero) = 0;
 };
 
 class CurePotion : public Potion {
 public:
     CurePotion(int xPos, int yPos);
 
-    void actOn(HeroShooter &hero) override;
+    void actOn(HeroArcher &hero) override;
 };
 
 class StrengthenPotion : public Potion {
 public:
     StrengthenPotion(int xPos, int yPos);
 
-    void actOn(HeroShooter &hero) override;
+    void actOn(HeroArcher &hero) override;
 };
 
 class DefendPotion : public Potion {
 public:
     DefendPotion(int xPos, int yPos);
 
-    void actOn(HeroShooter &hero) override;
+    void actOn(HeroArcher &hero) override;
 };
 
 class MindControlPotion : public Potion {
 public:
     MindControlPotion(int xPos, int yPos);
 
-    void actOn(HeroShooter &hero) override;
+    void actOn(HeroArcher &hero) override;
 };
 
 #endif //ADVENTURE_POTION_H

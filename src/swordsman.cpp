@@ -1,27 +1,27 @@
-#include "boxer.h"
+#include "swordsman.h"
 #include "draw.h"
 #include <random>
-#include "shooter.h"
+#include "archer.h"
 #include "map.h"
 #include "barrier.h"
 #include "astar.h"
 
 
-RandomWalkBoxer::RandomWalkBoxer(int xPos, int yPos)
-        : Boxer(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
+RandomWalkSwordsman::RandomWalkSwordsman(int xPos, int yPos)
+        : Swordsman(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
                 6 + AttackUtils::healthPointGainOfEnemies(),
                 1 + AttackUtils::defendValGainOfEnemies(),
                 3 + AttackUtils::attackValGainOfEnemies(),
-                8, MapUtils::randEngine() % 6, ENEMY) {}
+                    8, MapUtils::randEngine() % 6, ENEMY) {}
 
-bool RandomWalkBoxer::act() {
+bool RandomWalkSwordsman::act() {
     uniform_int_distribution<int> distribution(0, 3);
     int direction = distribution(MapUtils::randEngine);
     auto p = MapUtils::nextPosOfDirection(*this, direction);
-    return BoxerUtils::defaultAction(this, p.first, p.second);
+    return SwordsmanUtils::defaultAction(this, p.first, p.second);
 }
 
-bool RandomWalkBoxer::attack(Vulnerable &vulnerable) {
+bool RandomWalkSwordsman::attack(Vulnerable &vulnerable) {
     if (dynamic_cast<Barrier *>(&vulnerable)) {
         return true;
     } else {
@@ -30,23 +30,23 @@ bool RandomWalkBoxer::attack(Vulnerable &vulnerable) {
 }
 
 
-SmartBoxer::SmartBoxer(int xPos, int yPos)
-        : Boxer(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
+SmartSwordsman::SmartSwordsman(int xPos, int yPos)
+        : Swordsman(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
                 6 + AttackUtils::healthPointGainOfEnemies(),
                 1 + AttackUtils::defendValGainOfEnemies(),
                 3 + AttackUtils::attackValGainOfEnemies(),
-                8, MapUtils::randEngine() % 8,
-                ENEMY) {}
+                    8, MapUtils::randEngine() % 8,
+                    ENEMY) {}
 
-bool SmartBoxer::act() {
+bool SmartSwordsman::act() {
     auto p = AStar()(this, MapUtils::myHero);
     if (p.first == -1) {
         return true;
     }
-    return BoxerUtils::defaultAction(this, p.first, p.second);
+    return SwordsmanUtils::defaultAction(this, p.first, p.second);
 }
 
-bool SmartBoxer::attack(Vulnerable &vulnerable) {
+bool SmartSwordsman::attack(Vulnerable &vulnerable) {
     if (dynamic_cast<Barrier *>(&vulnerable)) {
         return true;
     } else {
@@ -54,7 +54,7 @@ bool SmartBoxer::attack(Vulnerable &vulnerable) {
     }
 }
 
-bool BoxerUtils::defaultAction(Boxer *boxer, int newX, int newY) {
+bool SwordsmanUtils::defaultAction(Swordsman *boxer, int newX, int newY) {
     if (!MapUtils::gameMap[newX][newY]) {
         MapUtils::moveToPos(*boxer, newX, newY);
         return true;

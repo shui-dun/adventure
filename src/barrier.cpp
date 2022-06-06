@@ -1,5 +1,5 @@
 #include "barrier.h"
-#include "bullet.h"
+#include "arrow.h"
 #include "draw.h"
 
 SolidBarrier::SolidBarrier(int xPos, int yPos)

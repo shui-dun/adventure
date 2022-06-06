@@ -9,7 +9,7 @@
 #include "potion.h"
 #include "move.h"
 #include "draw.h"
-#include "shooter.h"
+#include "archer.h"
 using namespace std;
 
 void runGame() {

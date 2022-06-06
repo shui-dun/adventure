@@ -2,8 +2,8 @@
 #define ADVENTURE_MAP_H
 
 #include "item.h"
-#include "bullet.h"
-#include "shooter.h"
+#include "arrow.h"
+#include "archer.h"
 #include <vector>
 #include <utility>
 #include <random>
@@ -20,7 +20,7 @@ class MapUtils {
 public:
     static vector<vector<Item *>> gameMap;
 
-    static HeroShooter *myHero;
+    static HeroArcher *myHero;
 
     static bool gameOver;
 

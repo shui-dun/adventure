@@ -10,7 +10,7 @@ bool AttackUtils::attack(int attackVal, Vulnerable &attacked) {
     attacked.healthPoint -= attackVal - attacked.defendVal;
     Item &attackedItem = dynamic_cast<Item &>(attacked);
     if (attacked.healthPoint <= 0) {
-        if (dynamic_cast<HeroShooter *>(&attacked)) {
+        if (dynamic_cast<HeroArcher *>(&attacked)) {
             MapUtils::gameOver = true;
         }
         MapUtils::gameMap[attackedItem.xPos][attackedItem.yPos] = nullptr;
@@ -25,7 +25,7 @@ bool AttackUtils::attack(Aggressive &attacker, Vulnerable &attacked) {
     if (dynamic_cast<Item &>(attacker).camp == dynamic_cast<Item &>(attacked).camp) {
         return true;
     } else {
-        if (dynamic_cast<HeroShooter *>(&attacked)) {
+        if (dynamic_cast<HeroArcher *>(&attacked)) {
             auto attack = dynamic_cast<Vulnerable *>(&attacker);
             if (attack) {
                 DrawUtils::genCurEnemyInfo(*attack);

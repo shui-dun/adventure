@@ -94,7 +94,7 @@ void DrawUtils::draw() {
     }
 
     mvprintw(0, 2, "HP: %d ATK: %d DEF: %d MindCtrl: %d SCORE: %d            ",
-             MapUtils::myHero->healthPoint, MapUtils::myHero->bulletAttackVal,
+             MapUtils::myHero->healthPoint, MapUtils::myHero->arrowAttackVal,
              MapUtils::myHero->defendVal, MapUtils::myHero->nMindControl, MapUtils::myHero->score);
 
     mvprintw(MapUtils::nLines() - 1, 2, curEnemyInfo.c_str());

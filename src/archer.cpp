@@ -1,4 +1,4 @@
-#include "shooter.h"
+#include "archer.h"
 #include "draw.h"
 #include "map.h"
 #include "potion.h"
@@ -8,18 +8,18 @@
 #include <map>
 #include <cursesw.h>
 
-map<chtype, int> HeroShooter::directMap = {{'w', 0},
-                                           {'s', 1},
-                                           {'a', 2},
-                                           {'d', 3}};
+map<chtype, int> HeroArcher::directMap = {{'w', 0},
+                                          {'s', 1},
+                                          {'a', 2},
+                                          {'d', 3}};
 
 
-HeroShooter::HeroShooter(int xPos, int yPos)
-        : Shooter(xPos, yPos, DrawUtils::HERO_SHOOTER_UP_SYMBOL, COLOR_PAIR(DrawUtils::HERO), 20, 1,
-                  1, 1, PLAYER, 3, 0),
+HeroArcher::HeroArcher(int xPos, int yPos)
+        : Archer(xPos, yPos, DrawUtils::HERO_SHOOTER_UP_SYMBOL, COLOR_PAIR(DrawUtils::HERO), 20, 1,
+                 1, 1, PLAYER, 3, 0),
           score(0), nMindControl(0) {}
 
-void HeroShooter::updateSymbol() {
+void HeroArcher::updateSymbol() {
     if (direction == 0) {
         symbol = DrawUtils::HERO_SHOOTER_UP_SYMBOL;
     } else if (direction == 1) {
@@ -31,7 +31,7 @@ void HeroShooter::updateSymbol() {
     }
 }
 
-bool HeroShooter::act() {
+bool HeroArcher::act() {
     int newX, newY;
     if (directMap.find(inputChar) != directMap.end()) {
         if (direction == directMap[inputChar]) {
@@ -64,7 +64,7 @@ bool HeroShooter::act() {
     } else if (inputChar == ' ') {
         auto p = MapUtils::nextPosOfDirection(*this, direction);
         int bulletX = p.first, bulletY = p.second;
-        auto bullet = new HeroBullet(bulletX, bulletY, *this);
+        auto bullet = new HeroArrow(bulletX, bulletY, *this);
         if (!MapUtils::gameMap[bulletX][bulletY]) {
             MapUtils::gameMap[bulletX][bulletY] = bullet;
             return true;
@@ -95,7 +95,7 @@ bool HeroShooter::act() {
     }
 }
 
-vector<Item *> HeroShooter::findNearestEnemies() {
+vector<Item *> HeroArcher::findNearestEnemies() {
     vector<Item *> v;
     for (int newX = xPos - 3; newX <= xPos + 3; newX++) {
         for (int newY = yPos - 3; newY <= yPos + 3; newY++) {
@@ -111,7 +111,7 @@ vector<Item *> HeroShooter::findNearestEnemies() {
     return v;
 }
 
-void HeroShooter::mindControl() {
+void HeroArcher::mindControl() {
     for (auto enemy: findNearestEnemies()) {
         enemy->camp = camp;
         enemy->color = COLOR_PAIR(DrawUtils::MIND_CONTROL);
@@ -120,56 +120,56 @@ void HeroShooter::mindControl() {
 }
 
 
-RandomWalkShooter::RandomWalkShooter(int xPos, int yPos)
-        : Shooter(xPos, yPos,
-                  DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
+RandomWalkArcher::RandomWalkArcher(int xPos, int yPos)
+        : Archer(xPos, yPos,
+                 DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
                   6 + AttackUtils::healthPointGainOfEnemies(),
                   1 + AttackUtils::defendValGainOfEnemies(),
-                  6,
+                 6,
                   MapUtils::randEngine() % 6,
-                  ENEMY,
+                 ENEMY,
                   3 + AttackUtils::attackValGainOfEnemies(),
-                  0) {}
+                 0) {}
 
-bool RandomWalkShooter::act() {
+bool RandomWalkArcher::act() {
     direction = uniform_int_distribution<int>(0, 3)(MapUtils::randEngine);
     auto p = MapUtils::nextPosOfDirection(*this, direction);
     double choice = uniform_real_distribution<double>(0, 1)(MapUtils::randEngine);
     int newX = p.first, newY = p.second;
     if (choice < 0.5) {
-        return ShooterUtils::defaultMove(this, newX, newY);
+        return ArcherUtils::defaultMove(this, newX, newY);
     } else {
-        return ShooterUtils::defaultShoot(this, 0, 0);
+        return ArcherUtils::defaultShoot(this, 0, 0);
     }
 }
 
-SmartShooter::SmartShooter(int xPos, int yPos)
-        : Shooter(xPos, yPos,
-                  DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
+SmartArcher::SmartArcher(int xPos, int yPos)
+        : Archer(xPos, yPos,
+                 DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
                   6 + AttackUtils::healthPointGainOfEnemies(),
                   1 + AttackUtils::defendValGainOfEnemies(),
-                  6,
+                 6,
                   MapUtils::randEngine() % 6,
-                  ENEMY,
+                 ENEMY,
                   3 + AttackUtils::attackValGainOfEnemies(),
-                  0) {}
+                 0) {}
 
-bool SmartShooter::act() {
+bool SmartArcher::act() {
     Item &enemy = *MapUtils::myHero;
     if (aligned(enemy)) {
         direction = MapUtils::locatedAtDirection(*this, enemy.xPos, enemy.yPos);
         auto p = MapUtils::nextPosOfDirection(*this, direction);
-        return ShooterUtils::defaultShoot(this, p.first, p.second);
+        return ArcherUtils::defaultShoot(this, p.first, p.second);
     } else {
         auto p = AStar()(this, &enemy);
         if (p.first == -1)
             return true;
         direction = MapUtils::locatedAtDirection(*this, p.first, p.second);
-        return ShooterUtils::defaultMove(this, p.first, p.second);
+        return ArcherUtils::defaultMove(this, p.first, p.second);
     }
 }
 
-bool SmartShooter::aligned(Item &item) {
+bool SmartArcher::aligned(Item &item) {
     if (xPos == item.xPos) {
         int minY = min(yPos, item.yPos);
         int maxY = max(yPos, item.yPos);
@@ -194,7 +194,7 @@ bool SmartShooter::aligned(Item &item) {
 }
 
 
-bool ShooterUtils::defaultMove(Shooter *shooter, int newX, int newY) {
+bool ArcherUtils::defaultMove(Archer *shooter, int newX, int newY) {
     Item *item = MapUtils::gameMap[newX][newY];
     if (!item) {
         MapUtils::moveToPos(*shooter, newX, newY);
@@ -209,8 +209,8 @@ bool ShooterUtils::defaultMove(Shooter *shooter, int newX, int newY) {
     }
 }
 
-bool ShooterUtils::defaultShoot(Shooter *shooter, int newX, int newY) {
-    auto bullet = new NormalBullet(newX, newY, *shooter);
+bool ArcherUtils::defaultShoot(Archer *shooter, int newX, int newY) {
+    auto bullet = new NormalArrow(newX, newY, *shooter);
     if (!MapUtils::gameMap[newX][newY]) {
         MapUtils::gameMap[newX][newY] = bullet;
         return true;
