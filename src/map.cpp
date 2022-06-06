@@ -7,7 +7,8 @@
 #include <thread>
 #include <mutex>
 #include <random>
-#include <fstream>
+#include <queue>
+#include <unordered_set>
 
 using namespace std;
 
@@ -43,8 +44,6 @@ void MapUtils::genWall() {
         gameMap[i][0] = new SolidBarrier(i, 0);
         gameMap[i][lines - 1] = new SolidBarrier(i, lines - 1);
     }
-    myHero = new HeroShooter(cols - 2, lines - 2);
-    gameMap[cols - 2][lines - 2] = myHero;
 }
 
 void MapUtils::genRandomMap() {
@@ -67,6 +66,13 @@ void MapUtils::genRandomMap() {
 }
 
 void MapUtils::createInitCharacters() {
+    int xPos = 1, yPos = 1;
+    while (gameMap[xPos][yPos]) {
+        xPos++;
+    }
+    myHero = new HeroShooter(xPos, yPos);
+    gameMap[xPos][yPos] = myHero;
+
     for (int i = 0; i < 20; ++i) {
         createRandomCharacter();
     }
@@ -87,8 +93,10 @@ void MapUtils::createRandomCharacter() {
     Item *item;
     uniform_real_distribution<float> distribution(0.0, 1.0);
     double randVal = distribution(randEngine);
-    if (randVal < 0.4) {
+    if (randVal < 0.35) {
         item = new RandomWalkBoxer(xPos, yPos);
+    } else if (randVal < 0.4) {
+        item = new SmartBoxer(xPos, yPos);
     } else if (randVal < 0.8) {
         item = new RandomWalkShooter(xPos, yPos);
     } else if (randVal < 0.85) {
@@ -109,7 +117,11 @@ bool MapUtils::isAxisLegal(int xPos, int yPos) {
 }
 
 pair<int, int> MapUtils::nextPosOfDirection(Item &item, int direction) {
-    int newX = item.xPos, newY = item.yPos;
+    return nextPosOfDirection(item.xPos, item.yPos, direction);
+}
+
+pair<int, int> MapUtils::nextPosOfDirection(int x, int y, int direction) {
+    int newX = x, newY = y;
     if (direction == 0) {
         newY -= 1;
     } else if (direction == 1) {
@@ -192,7 +204,7 @@ void MapUtils::genRecursiveSegmentationMap(int xFrom, int yFrom, int xTo, int yT
 void MapUtils::genLineOfWall(int fromY, int toY, int x, bool horizontal) {
     bool solid = uniform_int_distribution<int>(0, 1)(randEngine) == 1;
     uniform_real_distribution<double> d(0, 1.0);
-    double emptyProb = 0.2;
+    double emptyProb = 0.3;
     if (!horizontal && !solid) {
         for (int i = fromY; i <= toY; i++) {
             if (d(randEngine) > emptyProb) {

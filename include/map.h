@@ -5,6 +5,7 @@
 #include "bullet.h"
 #include "shooter.h"
 #include <vector>
+#include <utility>
 #include <random>
 #include <mutex>
 
@@ -40,6 +41,8 @@ public:
     static bool isAxisLegal(int xPos, int yPos);
 
     static pair<int, int> nextPosOfDirection(Item &item, int direction);
+
+    static pair<int, int> nextPosOfDirection(int x, int y, int direction);
 
     static void moveAllCharacters();
 

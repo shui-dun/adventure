@@ -38,4 +38,9 @@ public:
 
 };
 
+class BoxerUtils {
+public:
+    static bool defaultAction(Boxer *boxer, int newX, int newY);
+};
+
 #endif //ADVENTURE_BOXER_H

@@ -4,6 +4,7 @@
 #include "shooter.h"
 #include "map.h"
 #include "barrier.h"
+#include "astar.h"
 
 
 RandomWalkBoxer::RandomWalkBoxer(int xPos, int yPos)
@@ -17,30 +18,7 @@ bool RandomWalkBoxer::act() {
     uniform_int_distribution<int> distribution(0, 3);
     int direction = distribution(MapUtils::randEngine);
     auto p = MapUtils::nextPosOfDirection(*this, direction);
-    int newX = p.first, newY = p.second;
-    if (!MapUtils::gameMap[newX][newY]) {
-        MapUtils::moveToPos(*this, newX, newY);
-        return true;
-    } else if (dynamic_cast<Vulnerable *>(MapUtils::gameMap[newX][newY])) {
-        auto &attacked = dynamic_cast<Vulnerable &>(*MapUtils::gameMap[newX][newY]);
-        bool aliveOfEnemy = attack(attacked);
-        if (aliveOfEnemy) {
-            if (dynamic_cast<Aggressive *>(MapUtils::gameMap[newX][newY])) {
-                auto &aggressive = dynamic_cast<Aggressive &>(*MapUtils::gameMap[newX][newY]);
-                return aggressive.attack(*this);
-            } else {
-                return true;
-            }
-        } else {
-            MapUtils::moveToPos(*this, newX, newY);
-            return true;
-        }
-    } else if (dynamic_cast<Aggressive *>(MapUtils::gameMap[newX][newY])) {
-        auto &aggressive = dynamic_cast<Aggressive &>(*MapUtils::gameMap[newX][newY]);
-        return aggressive.attack(*this);
-    } else {
-        return true;
-    }
+    return BoxerUtils::defaultAction(this, p.first, p.second);
 }
 
 bool RandomWalkBoxer::attack(Vulnerable &vulnerable) {
@@ -57,12 +35,15 @@ SmartBoxer::SmartBoxer(int xPos, int yPos)
                 6 + AttackUtils::healthPointGainOfEnemies(),
                 1 + AttackUtils::defendValGainOfEnemies(),
                 3 + AttackUtils::attackValGainOfEnemies(),
-                8, MapUtils::randEngine() % timeUnits,
+                8, MapUtils::randEngine() % 8,
                 ENEMY) {}
 
 bool SmartBoxer::act() {
-    // A*搜索，尚待实现
-    return true;
+    auto p = AStar()(this, MapUtils::myHero);
+    if (p.first == -1) {
+        return true;
+    }
+    return BoxerUtils::defaultAction(this, p.first, p.second);
 }
 
 bool SmartBoxer::attack(Vulnerable &vulnerable) {
@@ -73,3 +54,28 @@ bool SmartBoxer::attack(Vulnerable &vulnerable) {
     }
 }
 
+bool BoxerUtils::defaultAction(Boxer *boxer, int newX, int newY) {
+    if (!MapUtils::gameMap[newX][newY]) {
+        MapUtils::moveToPos(*boxer, newX, newY);
+        return true;
+    } else if (dynamic_cast<Vulnerable *>(MapUtils::gameMap[newX][newY])) {
+        auto &attacked = dynamic_cast<Vulnerable &>(*MapUtils::gameMap[newX][newY]);
+        bool aliveOfEnemy = boxer->attack(attacked);
+        if (aliveOfEnemy) {
+            if (dynamic_cast<Aggressive *>(MapUtils::gameMap[newX][newY])) {
+                auto &aggressive = dynamic_cast<Aggressive &>(*MapUtils::gameMap[newX][newY]);
+                return aggressive.attack(*boxer);
+            } else {
+                return true;
+            }
+        } else {
+            MapUtils::moveToPos(*boxer, newX, newY);
+            return true;
+        }
+    } else if (dynamic_cast<Aggressive *>(MapUtils::gameMap[newX][newY])) {
+        auto &aggressive = dynamic_cast<Aggressive &>(*MapUtils::gameMap[newX][newY]);
+        return aggressive.attack(*boxer);
+    } else {
+        return true;
+    }
+}
