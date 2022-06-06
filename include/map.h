@@ -55,6 +55,8 @@ public:
     static int nCols();
 
     static void createRandomCharacter();
+
+    static int locatedAtDirection(Item &me, int destX, int destY);
 };
 
 

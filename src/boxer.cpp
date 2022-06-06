@@ -8,7 +8,7 @@
 
 
 RandomWalkBoxer::RandomWalkBoxer(int xPos, int yPos)
-        : Boxer(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::ENEMY),
+        : Boxer(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
                 6 + AttackUtils::healthPointGainOfEnemies(),
                 1 + AttackUtils::defendValGainOfEnemies(),
                 3 + AttackUtils::attackValGainOfEnemies(),
@@ -31,7 +31,7 @@ bool RandomWalkBoxer::attack(Vulnerable &vulnerable) {
 
 
 SmartBoxer::SmartBoxer(int xPos, int yPos)
-        : Boxer(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::ENEMY),
+        : Boxer(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
                 6 + AttackUtils::healthPointGainOfEnemies(),
                 1 + AttackUtils::defendValGainOfEnemies(),
                 3 + AttackUtils::attackValGainOfEnemies(),

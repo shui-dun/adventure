@@ -97,8 +97,10 @@ void MapUtils::createRandomCharacter() {
         item = new RandomWalkBoxer(xPos, yPos);
     } else if (randVal < 0.4) {
         item = new SmartBoxer(xPos, yPos);
-    } else if (randVal < 0.8) {
+    } else if (randVal < 0.75) {
         item = new RandomWalkShooter(xPos, yPos);
+    } else if (randVal < 0.8) {
+        item = new SmartShooter(xPos, yPos);
     } else if (randVal < 0.85) {
         item = new MindControlPotion(xPos, yPos);
     } else if (randVal < 0.9) {
@@ -237,6 +239,20 @@ void MapUtils::genLineOfWall(int fromY, int toY, int x, bool horizontal) {
     } else {
         delete gameMap[holePos][x];
         gameMap[holePos][x] = nullptr;
+    }
+}
+
+int MapUtils::locatedAtDirection(Item &me, int destX, int destY) {
+    if (destX == me.xPos) {
+        if (destY < me.yPos)
+            return 0;
+        else
+            return 1;
+    } else {
+        if (destX < me.xPos)
+            return 2;
+        else
+            return 3;
     }
 }
 

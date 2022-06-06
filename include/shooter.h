@@ -58,11 +58,20 @@ public:
 };
 
 class SmartShooter : public Shooter {
+private:
+    bool aligned(Item &item);
 
+public:
+    SmartShooter(int xPos, int yPos);
+
+    bool act() override;
 };
 
 class ShooterUtils {
+public:
+    static bool defaultMove(Shooter *shooter, int newX, int newY);
 
+    static bool defaultShoot(Shooter *shooter, int newX, int newY);
 };
 
 #endif //ADVENTURE_SHOOTER_H

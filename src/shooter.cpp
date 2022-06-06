@@ -2,6 +2,7 @@
 #include "draw.h"
 #include "map.h"
 #include "potion.h"
+#include "astar.h"
 #include <thread>
 #include <random>
 #include <map>
@@ -121,7 +122,7 @@ void HeroShooter::mindControl() {
 
 RandomWalkShooter::RandomWalkShooter(int xPos, int yPos)
         : Shooter(xPos, yPos,
-                  DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::ENEMY),
+                  DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
                   6 + AttackUtils::healthPointGainOfEnemies(),
                   1 + AttackUtils::defendValGainOfEnemies(),
                   6,
@@ -136,30 +137,89 @@ bool RandomWalkShooter::act() {
     double choice = uniform_real_distribution<double>(0, 1)(MapUtils::randEngine);
     int newX = p.first, newY = p.second;
     if (choice < 0.5) {
-        Item *item = MapUtils::gameMap[newX][newY];
-        if (!item) {
-            MapUtils::moveToPos(*this, newX, newY);
-            return true;
-        } else {
-            auto aggressive = dynamic_cast<Aggressive *>(item);
-            if (aggressive) {
-                return aggressive->attack(*this);
-            } else {
-                return true;
-            }
-        }
+        return ShooterUtils::defaultMove(this, newX, newY);
     } else {
-        auto bullet = new NormalBullet(newX, newY, *this);
-        if (!MapUtils::gameMap[newX][newY]) {
-            MapUtils::gameMap[newX][newY] = bullet;
+        return ShooterUtils::defaultShoot(this, 0, 0);
+    }
+}
+
+SmartShooter::SmartShooter(int xPos, int yPos)
+        : Shooter(xPos, yPos,
+                  DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
+                  6 + AttackUtils::healthPointGainOfEnemies(),
+                  1 + AttackUtils::defendValGainOfEnemies(),
+                  6,
+                  MapUtils::randEngine() % 6,
+                  ENEMY,
+                  3 + AttackUtils::attackValGainOfEnemies(),
+                  0) {}
+
+bool SmartShooter::act() {
+    Item &enemy = *MapUtils::myHero;
+    if (aligned(enemy)) {
+        direction = MapUtils::locatedAtDirection(*this, enemy.xPos, enemy.yPos);
+        auto p = MapUtils::nextPosOfDirection(*this, direction);
+        return ShooterUtils::defaultShoot(this, p.first, p.second);
+    } else {
+        auto p = AStar()(this, &enemy);
+        if (p.first == -1)
             return true;
-        } else {
-            auto vulnerable = dynamic_cast<Vulnerable *>(MapUtils::gameMap[newX][newY]);
-            if (vulnerable) {
-                bullet->attack(*vulnerable);
+        direction = MapUtils::locatedAtDirection(*this, p.first, p.second);
+        return ShooterUtils::defaultMove(this, p.first, p.second);
+    }
+}
+
+bool SmartShooter::aligned(Item &item) {
+    if (xPos == item.xPos) {
+        int minY = min(yPos, item.yPos);
+        int maxY = max(yPos, item.yPos);
+        for (int y = minY + 1; y <= maxY - 1; ++y) {
+            if (MapUtils::gameMap[xPos][y]) {
+                return false;
             }
-            delete bullet;
+        }
+        return true;
+    }
+    if (yPos == item.yPos) {
+        int minX = min(xPos, item.xPos);
+        int maxX = max(xPos, item.xPos);
+        for (int x = minX + 1; x <= maxX - 1; ++x) {
+            if (MapUtils::gameMap[x][yPos]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+
+bool ShooterUtils::defaultMove(Shooter *shooter, int newX, int newY) {
+    Item *item = MapUtils::gameMap[newX][newY];
+    if (!item) {
+        MapUtils::moveToPos(*shooter, newX, newY);
+        return true;
+    } else {
+        auto aggressive = dynamic_cast<Aggressive *>(item);
+        if (aggressive) {
+            return aggressive->attack(*shooter);
+        } else {
             return true;
         }
+    }
+}
+
+bool ShooterUtils::defaultShoot(Shooter *shooter, int newX, int newY) {
+    auto bullet = new NormalBullet(newX, newY, *shooter);
+    if (!MapUtils::gameMap[newX][newY]) {
+        MapUtils::gameMap[newX][newY] = bullet;
+        return true;
+    } else {
+        auto vulnerable = dynamic_cast<Vulnerable *>(MapUtils::gameMap[newX][newY]);
+        if (vulnerable) {
+            bullet->attack(*vulnerable);
+        }
+        delete bullet;
+        return true;
     }
 }

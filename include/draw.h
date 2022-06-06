@@ -30,7 +30,8 @@ public:
         GAME_OVER_INFO,
         SOLID_BARRIER,
         WEAK_BARRIER,
-        ENEMY,
+        RANDOM_WALK_ENEMY,
+        SMART_ENEMY,
         MIND_CONTROL,
         HERO,
         POTION
