@@ -97,18 +97,18 @@ void MapUtils::createRandomCharacter() {
         item = new RandomWalkSwordsman(xPos, yPos);
     } else if (randVal < 0.4) {
         item = new SmartSwordsman(xPos, yPos);
-    } else if (randVal < 0.75) {
+    } else if (randVal < 0.7) {
         item = new RandomWalkArcher(xPos, yPos);
-    } else if (randVal < 0.8) {
+    } else if (randVal < 0.75) {
         item = new SmartArcher(xPos, yPos);
-    } else if (randVal < 0.85) {
+    } else if (randVal < 0.8125) {
         item = new MindControlPotion(xPos, yPos);
-    } else if (randVal < 0.9) {
-        item = new CurePotion(xPos, yPos);
-    } else if (randVal < 0.95) {
+    } else if (randVal < 0.875) {
         item = new StrengthenPotion(xPos, yPos);
-    } else {
+    } else if (randVal < 0.9375) {
         item = new DefendPotion(xPos, yPos);
+    } else {
+        item = new CurePotion(xPos, yPos);
     }
     gameMap[xPos][yPos] = item;
 }

@@ -115,6 +115,10 @@ void HeroArcher::mindControl() {
     for (auto enemy: findNearestEnemies()) {
         enemy->camp = camp;
         enemy->color = COLOR_PAIR(DrawUtils::MIND_CONTROL);
+        auto v = dynamic_cast<Vulnerable *>(enemy);
+        if (v) {
+            v->healthPoint = v->initHealthPoint;
+        }
         MapUtils::gameMap[enemy->xPos][enemy->yPos] = enemy;
     }
 }

@@ -29,6 +29,11 @@ void runGame() {
             MapUtils::createRandomCharacter();
         }
 
+        if (MapUtils::gameOver) {
+            MapUtils::mapMutex.unlock();
+            return;
+        }
+
         DrawUtils::draw();
 
         MapUtils::mapMutex.unlock();
