@@ -2,6 +2,6 @@
 
 ## 未来改进
 
-- 实现SmartShooter
+- SmartShooter等可以被精神控制
 
 
