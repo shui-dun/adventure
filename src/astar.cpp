@@ -16,16 +16,11 @@ bool AStar::Cmp::operator()(const AStar::Node *a, const AStar::Node *b) {
 
 Item *AStar::Cmp::dest;
 
-
-size_t AStar::NodeHash::operator()(const AStar::Node *node) const {
+size_t AStar::AxisHash::operator()(const pair<int, int> &node) const {
     size_t seed = 0;
-    hash_combine(seed, node->x);
-    hash_combine(seed, node->y);
+    hash_combine(seed, node.first);
+    hash_combine(seed, node.second);
     return seed;
-}
-
-bool AStar::NodeEquals::operator()(const AStar::Node *a, const AStar::Node *b) const {
-    return a->x == b->x && a->y == b->y;
 }
 
 pair<int, int> AStar::operator()(Item *fromItem, Item *toItem) {
@@ -33,11 +28,14 @@ pair<int, int> AStar::operator()(Item *fromItem, Item *toItem) {
 
     priority_queue<Node *, vector<Node *>, Cmp> q;
 
-    unordered_set<Node *, NodeHash, NodeEquals> st;
+    vector<Node *> release;
+
+    unordered_set<pair<int, int>, AxisHash> st;
 
     auto fromNode = new Node(fromItem->xPos, fromItem->yPos, 0, nullptr);
     q.push(fromNode);
-    st.insert(fromNode);
+    release.push_back(fromNode);
+    st.insert(pair<int, int>(fromNode->x, fromNode->y));
 
     bool success = false;
     pair<int, int> ans(-1, -1);
@@ -47,10 +45,14 @@ pair<int, int> AStar::operator()(Item *fromItem, Item *toItem) {
         q.pop();
         for (int direction = 0; direction < 4; ++direction) {
             auto pr = MapUtils::nextPosOfDirection(node->x, node->y, direction);
-            auto newNode = new Node(pr.first, pr.second, node->distance + 1, node);
-            if (st.find(newNode) == st.end()) {
-                st.insert(newNode);
-                if (newNode->x == toItem->xPos && newNode->y == toItem->yPos) {
+            if (st.find(pr) == st.end() &&
+                (!MapUtils::gameMap[pr.first][pr.second] ||
+                 (pr.first == toItem->xPos && pr.second == toItem->yPos))) {
+                auto newNode = new Node(pr.first, pr.second, node->distance + 1, node);
+                q.push(newNode);
+                release.push_back(newNode);
+                st.insert(pr);
+                if (pr.first == toItem->xPos && pr.second == toItem->yPos) {
                     Node *preNode = node;
                     Node *curNode = newNode;
                     while (preNode != fromNode) {
@@ -62,16 +64,12 @@ pair<int, int> AStar::operator()(Item *fromItem, Item *toItem) {
                     success = true;
                     break;
                 }
-                if (!MapUtils::gameMap[pr.first][pr.second]) {
-                    q.push(newNode);
-                }
-            } else {
-                delete newNode;
             }
         }
     }
-    for (auto p: st) {
+    for (auto p: release) {
         delete p;
     }
     return ans;
 }
+

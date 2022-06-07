@@ -27,7 +27,7 @@ class AStar {
         bool operator()(const Node *a, const Node *b);
     };
 
-    class NodeHash {
+    class AxisHash {
         template<class T>
         inline void hash_combine(std::size_t &seed, const T &v) const {
             std::hash<T> hasher;
@@ -35,12 +35,7 @@ class AStar {
         }
 
     public:
-        size_t operator()(const Node *node) const;
-    };
-
-    class NodeEquals {
-    public:
-        bool operator()(const Node *a, const Node *b) const;
+        size_t operator()(const pair<int, int> &node) const;
     };
 
 public:
