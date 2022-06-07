@@ -2,7 +2,7 @@
 #include "draw.h"
 #include "map.h"
 #include "potion.h"
-#include "astar.h"
+#include "search.h"
 #include <thread>
 #include <random>
 #include <map>
@@ -123,12 +123,12 @@ void HeroArcher::mindControl() {
 RandomWalkArcher::RandomWalkArcher(int xPos, int yPos)
         : Archer(xPos, yPos,
                  DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
-                  6 + AttackUtils::healthPointGainOfEnemies(),
-                  1 + AttackUtils::defendValGainOfEnemies(),
+                 6 + AttackUtils::healthPointGainOfEnemies(),
+                 1 + AttackUtils::defendValGainOfEnemies(),
                  6,
-                  MapUtils::randEngine() % 6,
+                 MapUtils::randEngine() % 6,
                  ENEMY,
-                  3 + AttackUtils::attackValGainOfEnemies(),
+                 3 + AttackUtils::attackValGainOfEnemies(),
                  0) {}
 
 bool RandomWalkArcher::act() {
@@ -139,33 +139,52 @@ bool RandomWalkArcher::act() {
     if (choice < 0.5) {
         return ArcherUtils::defaultMove(this, newX, newY);
     } else {
-        return ArcherUtils::defaultShoot(this, 0, 0);
+        return ArcherUtils::defaultShoot(this, newX, newY);
     }
 }
 
 SmartArcher::SmartArcher(int xPos, int yPos)
         : Archer(xPos, yPos,
                  DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
-                  6 + AttackUtils::healthPointGainOfEnemies(),
-                  1 + AttackUtils::defendValGainOfEnemies(),
+                 6 + AttackUtils::healthPointGainOfEnemies(),
+                 1 + AttackUtils::defendValGainOfEnemies(),
                  6,
-                  MapUtils::randEngine() % 6,
+                 MapUtils::randEngine() % 6,
                  ENEMY,
-                  3 + AttackUtils::attackValGainOfEnemies(),
+                 3 + AttackUtils::attackValGainOfEnemies(),
                  0) {}
 
 bool SmartArcher::act() {
-    Item &enemy = *MapUtils::myHero;
-    if (aligned(enemy)) {
-        direction = MapUtils::locatedAtDirection(*this, enemy.xPos, enemy.yPos);
-        auto p = MapUtils::nextPosOfDirection(*this, direction);
-        return ArcherUtils::defaultShoot(this, p.first, p.second);
+    if (camp == ENEMY) {
+        Item *enemy = MapUtils::myHero;
+        if (aligned(*enemy)) {
+            direction = MapUtils::locatedAtDirection(*this, enemy->xPos, enemy->yPos);
+            auto p = MapUtils::nextPosOfDirection(*this, direction);
+            return ArcherUtils::defaultShoot(this, p.first, p.second);
+        } else {
+            auto p = AStar()(this, enemy);
+            if (p.first == -1)
+                return true;
+            direction = MapUtils::locatedAtDirection(*this, p.first, p.second);
+            return ArcherUtils::defaultMove(this, p.first, p.second);
+        }
     } else {
-        auto p = AStar()(this, &enemy);
-        if (p.first == -1)
+        auto pr = BFS()(this, [](Item *item) -> bool {
+            return item->camp == ENEMY && !dynamic_cast<Arrow *>(item);
+        });
+        Item *enemy = pr.first;
+        if (!enemy) {
             return true;
-        direction = MapUtils::locatedAtDirection(*this, p.first, p.second);
-        return ArcherUtils::defaultMove(this, p.first, p.second);
+        }
+        if (aligned(*enemy)) {
+            direction = MapUtils::locatedAtDirection(*this, enemy->xPos, enemy->yPos);
+            auto p = MapUtils::nextPosOfDirection(*this, direction);
+            return ArcherUtils::defaultShoot(this, p.first, p.second);
+        } else {
+            auto p = pr.second;
+            direction = MapUtils::locatedAtDirection(*this, p.first, p.second);
+            return ArcherUtils::defaultMove(this, p.first, p.second);
+        }
     }
 }
 

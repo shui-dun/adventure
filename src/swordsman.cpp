@@ -4,14 +4,14 @@
 #include "archer.h"
 #include "map.h"
 #include "barrier.h"
-#include "astar.h"
+#include "search.h"
 
 
 RandomWalkSwordsman::RandomWalkSwordsman(int xPos, int yPos)
         : Swordsman(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
-                6 + AttackUtils::healthPointGainOfEnemies(),
-                1 + AttackUtils::defendValGainOfEnemies(),
-                3 + AttackUtils::attackValGainOfEnemies(),
+                    6 + AttackUtils::healthPointGainOfEnemies(),
+                    1 + AttackUtils::defendValGainOfEnemies(),
+                    3 + AttackUtils::attackValGainOfEnemies(),
                     8, MapUtils::randEngine() % 6, ENEMY) {}
 
 bool RandomWalkSwordsman::act() {
@@ -32,14 +32,21 @@ bool RandomWalkSwordsman::attack(Vulnerable &vulnerable) {
 
 SmartSwordsman::SmartSwordsman(int xPos, int yPos)
         : Swordsman(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
-                6 + AttackUtils::healthPointGainOfEnemies(),
-                1 + AttackUtils::defendValGainOfEnemies(),
-                3 + AttackUtils::attackValGainOfEnemies(),
+                    6 + AttackUtils::healthPointGainOfEnemies(),
+                    1 + AttackUtils::defendValGainOfEnemies(),
+                    3 + AttackUtils::attackValGainOfEnemies(),
                     8, MapUtils::randEngine() % 8,
                     ENEMY) {}
 
 bool SmartSwordsman::act() {
-    auto p = AStar()(this, MapUtils::myHero);
+    pair<int, int> p;
+    if (camp == ENEMY) {
+        p = AStar()(this, MapUtils::myHero);
+    } else {
+        p = BFS()(this, [](Item *item) -> bool {
+            return item->camp == ENEMY && !dynamic_cast<Arrow *>(item);
+        }).second;
+    }
     if (p.first == -1) {
         return true;
     }
