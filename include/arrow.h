@@ -21,7 +21,7 @@ public:
               Aggressive(attackVal),
               direction(direction) {}
 
-    // 前进方向
+    /** 前进方向 */
     int direction;
 };
 
