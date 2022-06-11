@@ -24,7 +24,7 @@ mt19937 MapUtils::randEngine;
 
 void MapUtils::init() {
     genWall();
-    if (uniform_real_distribution<double>(0, 1.0)(randEngine) < 0.0) {
+    if (uniform_real_distribution<double>(0, 1.0)(randEngine) < 0.5) {
         genRandomMap();
     } else {
         genRecursiveSegmentationMap(1, 1, nCols() - 2, nLines() - 2);
@@ -97,15 +97,15 @@ void MapUtils::createRandomCharacter() {
         item = new RandomWalkSwordsman(xPos, yPos);
     } else if (randVal < 0.4) {
         item = new SmartSwordsman(xPos, yPos);
-    } else if (randVal < 0.7) {
-        item = new RandomWalkArcher(xPos, yPos);
     } else if (randVal < 0.75) {
+        item = new RandomWalkArcher(xPos, yPos);
+    } else if (randVal < 0.8) {
         item = new SmartArcher(xPos, yPos);
-    } else if (randVal < 0.8125) {
+    } else if (randVal < 0.85) {
         item = new MindControlPotion(xPos, yPos);
-    } else if (randVal < 0.875) {
+    } else if (randVal < 0.9) {
         item = new StrengthenPotion(xPos, yPos);
-    } else if (randVal < 0.9375) {
+    } else if (randVal < 0.95) {
         item = new DefendPotion(xPos, yPos);
     } else {
         item = new CurePotion(xPos, yPos);

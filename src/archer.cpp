@@ -15,19 +15,19 @@ map<chtype, int> HeroArcher::directMap = {{'w', 0},
 
 
 HeroArcher::HeroArcher(int xPos, int yPos)
-        : Archer(xPos, yPos, DrawUtils::HERO_SHOOTER_UP_SYMBOL, COLOR_PAIR(DrawUtils::HERO), 20, 1,
+        : Archer(xPos, yPos, DrawUtils::HERO_ARCHER_UP_SYMBOL, COLOR_PAIR(DrawUtils::HERO), 20, 1,
                  1, 1, PLAYER, 3, 0),
           score(0), nMindControl(0) {}
 
 void HeroArcher::updateSymbol() {
     if (direction == 0) {
-        symbol = DrawUtils::HERO_SHOOTER_UP_SYMBOL;
+        symbol = DrawUtils::HERO_ARCHER_UP_SYMBOL;
     } else if (direction == 1) {
-        symbol = DrawUtils::HERO_SHOOTER_DOWN_SYMBOL;
+        symbol = DrawUtils::HERO_ARCHER_DOWN_SYMBOL;
     } else if (direction == 2) {
-        symbol = DrawUtils::HERO_SHOOTER_LEFT_SYMBOL;
+        symbol = DrawUtils::HERO_ARCHER_LEFT_SYMBOL;
     } else if (direction == 3) {
-        symbol = DrawUtils::HERO_SHOOTER_RIGHT_SYMBOL;
+        symbol = DrawUtils::HERO_ARCHER_RIGHT_SYMBOL;
     }
 }
 
@@ -126,7 +126,7 @@ void HeroArcher::mindControl() {
 
 RandomWalkArcher::RandomWalkArcher(int xPos, int yPos)
         : Archer(xPos, yPos,
-                 DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
+                 DrawUtils::ENEMY_ARCHER_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
                  6 + AttackUtils::healthPointGainOfEnemies(),
                  1 + AttackUtils::defendValGainOfEnemies(),
                  6,
@@ -149,7 +149,7 @@ bool RandomWalkArcher::act() {
 
 SmartArcher::SmartArcher(int xPos, int yPos)
         : Archer(xPos, yPos,
-                 DrawUtils::ENEMY_SHOOTER_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
+                 DrawUtils::ENEMY_ARCHER_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
                  6 + AttackUtils::healthPointGainOfEnemies(),
                  1 + AttackUtils::defendValGainOfEnemies(),
                  6,

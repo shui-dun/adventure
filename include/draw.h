@@ -12,17 +12,17 @@ class DrawUtils {
 public:
     static const char *EMPTY_SYMBOL;
     static const char *BARRIER_SYMBOL;
-    static const char *BOXER_SYMBOL;
-    static const char *BULLET_SYMBOL;
+    static const char *SWORDSMAN_SYMBOL;
+    static const char *ARROW_SYMBOL;
     static const char *CURE_POTION_SYMBOL;
     static const char *STRENGTH_POTION_SYMBOL;
     static const char *DEFEND_POTION_SYMBOL;
     static const char *MIND_CONTROL_POTION_SYMBOL;
-    static const char *ENEMY_SHOOTER_SYMBOL;
-    static const char *HERO_SHOOTER_UP_SYMBOL;
-    static const char *HERO_SHOOTER_DOWN_SYMBOL;
-    static const char *HERO_SHOOTER_LEFT_SYMBOL;
-    static const char *HERO_SHOOTER_RIGHT_SYMBOL;
+    static const char *ENEMY_ARCHER_SYMBOL;
+    static const char *HERO_ARCHER_UP_SYMBOL;
+    static const char *HERO_ARCHER_DOWN_SYMBOL;
+    static const char *HERO_ARCHER_LEFT_SYMBOL;
+    static const char *HERO_ARCHER_RIGHT_SYMBOL;
 
 
     enum colorEnum {

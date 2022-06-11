@@ -7,31 +7,31 @@
 #ifdef USE_UNICODE_CHARACTER
 const char *DrawUtils::EMPTY_SYMBOL = "  ";
 const char *DrawUtils::BARRIER_SYMBOL = "  ";
-const char *DrawUtils::BOXER_SYMBOL = "🙃";
-const char *DrawUtils::BULLET_SYMBOL = "〇";
+const char *DrawUtils::SWORDSMAN_SYMBOL = "🙃";
+const char *DrawUtils::ARROW_SYMBOL = "〇";
 const char *DrawUtils::CURE_POTION_SYMBOL = "💗";
 const char *DrawUtils::STRENGTH_POTION_SYMBOL = "🏹";
 const char *DrawUtils::DEFEND_POTION_SYMBOL = "🔰";
 const char *DrawUtils::MIND_CONTROL_POTION_SYMBOL = "🌀";
-const char *DrawUtils::ENEMY_SHOOTER_SYMBOL = "🤡";
-const char *DrawUtils::HERO_SHOOTER_UP_SYMBOL = "▲▲";
-const char *DrawUtils::HERO_SHOOTER_DOWN_SYMBOL = "▼▼";
-const char *DrawUtils::HERO_SHOOTER_LEFT_SYMBOL = "⮜⬤";
-const char *DrawUtils::HERO_SHOOTER_RIGHT_SYMBOL = "⬤➤";
+const char *DrawUtils::ENEMY_ARCHER_SYMBOL = "🤡";
+const char *DrawUtils::HERO_ARCHER_UP_SYMBOL = "▲▲";
+const char *DrawUtils::HERO_ARCHER_DOWN_SYMBOL = "▼▼";
+const char *DrawUtils::HERO_ARCHER_LEFT_SYMBOL = "⮜⬤";
+const char *DrawUtils::HERO_ARCHER_RIGHT_SYMBOL = "⬤➤";
 #else
 const char *DrawUtils::EMPTY_SYMBOL = " ";
 const char *DrawUtils::BARRIER_SYMBOL = " ";
-const char *DrawUtils::BOXER_SYMBOL = "O";
-const char *DrawUtils::BULLET_SYMBOL = "*";
+const char *DrawUtils::SWORDSMAN_SYMBOL = "O";
+const char *DrawUtils::ARROW_SYMBOL = "*";
 const char *DrawUtils::CURE_POTION_SYMBOL = "+";
 const char *DrawUtils::STRENGTH_POTION_SYMBOL = "!";
 const char *DrawUtils::DEFEND_POTION_SYMBOL = "U";
 const char *DrawUtils::MIND_CONTROL_POTION_SYMBOL = "@";
-const char *DrawUtils::ENEMY_SHOOTER_SYMBOL = "X";
-const char *DrawUtils::HERO_SHOOTER_UP_SYMBOL = "A";
-const char *DrawUtils::HERO_SHOOTER_DOWN_SYMBOL = "V";
-const char *DrawUtils::HERO_SHOOTER_LEFT_SYMBOL = "<";
-const char *DrawUtils::HERO_SHOOTER_RIGHT_SYMBOL = ">";
+const char *DrawUtils::ENEMY_ARCHER_SYMBOL = "X";
+const char *DrawUtils::HERO_ARCHER_UP_SYMBOL = "A";
+const char *DrawUtils::HERO_ARCHER_DOWN_SYMBOL = "V";
+const char *DrawUtils::HERO_ARCHER_LEFT_SYMBOL = "<";
+const char *DrawUtils::HERO_ARCHER_RIGHT_SYMBOL = ">";
 #endif
 
 

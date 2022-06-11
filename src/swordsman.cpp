@@ -8,7 +8,7 @@
 
 
 RandomWalkSwordsman::RandomWalkSwordsman(int xPos, int yPos)
-        : Swordsman(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
+        : Swordsman(xPos, yPos, DrawUtils::SWORDSMAN_SYMBOL, COLOR_PAIR(DrawUtils::RANDOM_WALK_ENEMY),
                     6 + AttackUtils::healthPointGainOfEnemies(),
                     1 + AttackUtils::defendValGainOfEnemies(),
                     3 + AttackUtils::attackValGainOfEnemies(),
@@ -31,7 +31,7 @@ bool RandomWalkSwordsman::attack(Vulnerable &vulnerable) {
 
 
 SmartSwordsman::SmartSwordsman(int xPos, int yPos)
-        : Swordsman(xPos, yPos, DrawUtils::BOXER_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
+        : Swordsman(xPos, yPos, DrawUtils::SWORDSMAN_SYMBOL, COLOR_PAIR(DrawUtils::SMART_ENEMY),
                     6 + AttackUtils::healthPointGainOfEnemies(),
                     1 + AttackUtils::defendValGainOfEnemies(),
                     3 + AttackUtils::attackValGainOfEnemies(),

@@ -3,7 +3,7 @@
 #include "swordsman.h"
 
 NormalArrow::NormalArrow(int xPos, int yPos, Archer &launcher)
-        : Arrow(xPos, yPos, DrawUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
+        : Arrow(xPos, yPos, DrawUtils::ARROW_SYMBOL, launcher.color, launcher.camp,
                 5, 3, 1, 0,
                 launcher.arrowAttackVal, launcher.direction) {}
 
@@ -20,7 +20,7 @@ bool HeroArrow::act() {
 }
 
 HeroArrow::HeroArrow(int xPos, int yPos, HeroArcher &launcher)
-        : Arrow(xPos, yPos, DrawUtils::BULLET_SYMBOL, launcher.color, launcher.camp,
+        : Arrow(xPos, yPos, DrawUtils::ARROW_SYMBOL, launcher.color, launcher.camp,
                 5, 3, 1, 0,
                 launcher.arrowAttackVal, launcher.direction), launcher(launcher) {}
 
