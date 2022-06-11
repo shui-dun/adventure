@@ -7,6 +7,9 @@
 #include "map.h"
 #include "archer.h"
 
+/**
+ * 箭矢
+ */
 class Arrow : public Item, public Movable, public Vulnerable, public Aggressive {
 public:
     Arrow(int xPos, int yPos, const char *symbol, chtype color, CampEnum camp, unsigned int timeUnits,
@@ -18,10 +21,14 @@ public:
               Aggressive(attackVal),
               direction(direction) {}
 
+    // 前进方向
     int direction;
 };
 
 
+/**
+ * 普通的箭矢
+ */
 class NormalArrow : public Arrow {
 public:
     NormalArrow(int xPos, int yPos, Archer &launcher);
@@ -32,10 +39,14 @@ public:
 
 };
 
+/**
+ * 玩家发动的箭矢，和普通箭矢的区别在于该箭矢造成的伤害可以为玩家增加得分
+ */
 class HeroArrow : public Arrow {
 public:
     HeroArrow(int xPos, int yPos, HeroArcher &launcher);
 
+    /** 发动者 */
     HeroArcher &launcher;
 
     bool act() override;
@@ -43,9 +54,13 @@ public:
     bool attack(Vulnerable &vulnerable) override;
 };
 
+/**
+ * 箭矢工具类
+ */
 class ArrowUtils {
 public:
-    static bool defaultAction(Arrow &bullet);
+    /** 箭矢的默认行为 */
+    static bool defaultAction(Arrow &arrow);
 };
 
 #endif //ADVENTURE_ARROW_H

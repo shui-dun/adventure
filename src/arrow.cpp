@@ -42,18 +42,18 @@ bool HeroArrow::attack(Vulnerable &vulnerable) {
     return alive;
 }
 
-bool ArrowUtils::defaultAction(Arrow &bullet) {
-    auto p = MapUtils::nextPosOfDirection(bullet, bullet.direction);
+bool ArrowUtils::defaultAction(Arrow &arrow) {
+    auto p = MapUtils::nextPosOfDirection(arrow, arrow.direction);
     int newX = p.first, newY = p.second;
-    if (!MapUtils::gameMap[newX][newY]) {
-        MapUtils::moveToPos(bullet, newX, newY);
+    if (!MapUtils::gameMap[newX][newY]) { // 如果前方是空地，直接前进
+        MapUtils::moveToPos(arrow, newX, newY);
         return true;
-    } else {
+    } else { // 否则攻击对方，被销毁自己
         auto vulnerable = dynamic_cast<Vulnerable *>(MapUtils::gameMap[newX][newY]);
         if (vulnerable) {
-            bullet.attack(*vulnerable);
+            arrow.attack(*vulnerable);
         }
-        AttackUtils::attack(1, bullet);
+        AttackUtils::attack(1, arrow);
         return false;
     }
 }

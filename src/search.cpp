@@ -25,11 +25,11 @@ size_t AxisHash::operator()(const pair<int, int> &node) const {
 
 pair<int, int> AStar::operator()(Item *fromItem, Item *toItem) {
     Cmp::dest = toItem;
-
+    // 优先队列，每个弹出代价最小的坐标
     priority_queue<Node *, vector<Node *>, Cmp> q;
-
+    // 保存动态分配的节点，用于后续的释放
     vector<Node *> release;
-
+    // 存放访问过的坐标
     unordered_set<pair<int, int>, AxisHash> st;
 
     auto fromNode = new Node(fromItem->xPos, fromItem->yPos, 0, nullptr);
@@ -74,8 +74,11 @@ pair<int, int> AStar::operator()(Item *fromItem, Item *toItem) {
 }
 
 pair<Item *, pair<int, int>> BFS::operator()(Item *fromItem, const function<bool(Item *)> &func) {
+    // 队列，用于广度优先搜索
     queue<Node *> q;
+    // 保存动态分配的节点，用于后续的释放
     vector<Node *> release;
+    // 存放访问过的坐标
     unordered_set<pair<int, int>, AxisHash> st;
     auto fromNode = new Node(fromItem->xPos, fromItem->yPos, 0, nullptr);
     q.push(fromNode);

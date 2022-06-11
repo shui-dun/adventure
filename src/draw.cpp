@@ -89,7 +89,7 @@ void DrawUtils::pause() {
 void DrawUtils::draw() {
     for (int i = 0; i < MapUtils::nCols(); ++i) {
         for (int j = 0; j < MapUtils::nLines(); ++j) {
-            updateAxis(i, j);
+            drawAxis(i, j);
         }
     }
 
@@ -102,7 +102,7 @@ void DrawUtils::draw() {
     refresh();
 }
 
-void DrawUtils::updateAxis(int x, int y) {
+void DrawUtils::drawAxis(int x, int y) {
 #ifdef USE_UNICODE_CHARACTER
     int drawX = 2 * x;
 #else

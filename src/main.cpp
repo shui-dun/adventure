@@ -25,6 +25,11 @@ void runGame() {
 
         MapUtils::moveAllCharacters();
 
+        if (MapUtils::gameOver) {
+            MapUtils::mapMutex.unlock();
+            return;
+        }
+
         if (distribution(MapUtils::randEngine) < 0.016) {
             MapUtils::createRandomCharacter();
         }

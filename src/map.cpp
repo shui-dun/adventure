@@ -91,7 +91,7 @@ void MapUtils::createRandomCharacter() {
         }
     }
     Item *item;
-    uniform_real_distribution<float> distribution(0.0, 1.0);
+    uniform_real_distribution<double> distribution(0.0, 1.0);
     double randVal = distribution(randEngine);
     if (randVal < 0.35) {
         item = new RandomWalkSwordsman(xPos, yPos);
@@ -136,20 +136,17 @@ pair<int, int> MapUtils::nextPosOfDirection(int x, int y, int direction) {
     return {newX, newY};
 }
 
-bool MapUtils::shouldMove(Movable &movable) {
-    movable.curTimeUnit = (movable.curTimeUnit + 1) % movable.timeUnits;
-    return movable.curTimeUnit == 0;
-}
-
 void MapUtils::moveAllCharacters() {
     for (int i = 1; i < nCols() - 1; ++i) {
         for (int j = 1; j < nLines() - 1; ++j) {
+            if (MapUtils::gameOver)
+                return;
             auto movable = dynamic_cast<Movable *>(gameMap[i][j]);
             if (!movable)
                 continue;
             if (dynamic_cast<HeroArcher *>(movable))
                 continue;
-            if (!shouldMove(*movable))
+            if (!MoveUtils::shouldMove(*movable))
                 continue;
             movable->act();
         }
