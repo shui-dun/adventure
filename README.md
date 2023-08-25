@@ -23,6 +23,13 @@
 
 需要注意，unicode版本兼容性较差，例如在windows命令行下会乱码
 
+你也可以通过Docker来构建：
+
+```bash
+docker build -t adventure .
+docker run --rm -it adventure
+```
+
 ## 规则说明
 
 - 角色A攻击角色B时，B的体力值的减少量是A的攻击值与B的防御值之差。特别地，当A的攻击值小于B的防御值时，不对B造成伤害，例如初始化时，玩家便无法对围墙造成伤害
