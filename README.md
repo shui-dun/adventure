@@ -30,6 +30,13 @@ docker build -t adventure .
 docker run --rm -it adventure
 ```
 
+你也可以使用构建好的镜像：
+
+```bash
+docker pull shuidun/adventure
+docker run --rm -it shuidun/adventure
+```
+
 ## 规则说明
 
 - 角色A攻击角色B时，B的体力值的减少量是A的攻击值与B的防御值之差。特别地，当A的攻击值小于B的防御值时，不对B造成伤害，例如初始化时，玩家便无法对围墙造成伤害
