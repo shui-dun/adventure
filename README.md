@@ -10,16 +10,16 @@
 
 1. `sudo apt install libncurses5-dev`
 2. `mkdir build && cd build`
-3. `cmake ..`
+3. `cmake -DCMAKE_BUILD_TYPE=Release ..`
 4. `cmake --build .`
 
 ### Unicode版本
 
 1. `sudo apt purge libncurses-dev`
 2. `sudo apt install libncursesw5-dev`
-2. `mkdir build && cd build`
-2. `cmake -DUSE_UNICODE=on ..`
-2. `cmake --build .`
+3. `mkdir build && cd build`
+4. `cmake -DUSE_UNICODE=on -DCMAKE_BUILD_TYPE=Release ..`
+5. `cmake --build .`
 
 需要注意，unicode版本兼容性较差，例如在windows命令行下会乱码
 
